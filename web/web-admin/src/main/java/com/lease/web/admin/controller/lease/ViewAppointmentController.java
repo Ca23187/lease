@@ -1,0 +1,31 @@
+package com.lease.web.admin.controller.lease;
+
+
+import com.lease.common.result.Result;
+import com.lease.model.enums.AppointmentStatus;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+
+@Tag(name = "预约看房管理")
+@RequestMapping("/admin/appointment")
+@RestController
+public class ViewAppointmentController {
+
+//    @Operation(summary = "分页查询预约信息")
+//    @GetMapping("page")
+//    public Result<IPage<AppointmentVo>> page(@RequestParam long current, @RequestParam long size, AppointmentQueryVo queryVo) {
+//        return Result.ok();
+//    }
+
+    @Operation(summary = "根据id更新预约状态")
+    @PostMapping("updateStatusById")
+    public Result updateStatusById(@RequestParam Long id, @RequestParam AppointmentStatus status) {
+        return Result.ok();
+    }
+
+}
