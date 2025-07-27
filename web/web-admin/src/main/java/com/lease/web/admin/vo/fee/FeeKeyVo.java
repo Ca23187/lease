@@ -15,4 +15,10 @@ public class FeeKeyVo extends FeeKey {
 
     @Schema(description = "杂费value列表")
     private List<FeeValue> feeValueList;
+
+    public FeeKeyVo(Long id, String name, List<FeeValue> feeValueList) {
+        super.setId(id);
+        super.setName(name);
+        this.setFeeValueList(feeValueList);
+    }
 }

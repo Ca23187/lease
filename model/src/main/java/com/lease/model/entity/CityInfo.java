@@ -1,13 +1,15 @@
 package com.lease.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serial;
+import java.util.List;
 
 @Schema(description = "城市信息表")
 @Setter
@@ -23,8 +25,13 @@ public class CityInfo extends BaseEntity {
     @Column(name = "name")
     private String name;
 
-    @Schema(description = "所属省份id")
-    @Column(name = "province_id")
-    private Integer provinceId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "province-city")
+    @JsonIgnore
+    @JoinColumn(name = "province_id")
+    private ProvinceInfo provinceInfo;
 
+    @JsonBackReference(value = "city-district")
+    @OneToMany(mappedBy = "cityInfo", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<DistrictInfo> districtInfoList;
 }

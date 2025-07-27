@@ -34,7 +34,7 @@ public class FacilityController {
     @Operation(summary = "新增或修改配套信息")
     @PostMapping("saveOrUpdate")
     public Result<Void> saveOrUpdate(@RequestBody FacilityInfo facilityInfo) {
-        service.saveAndUpload(facilityInfo);
+        service.saveOrUpload(facilityInfo);
         return Result.ok();
     }
 

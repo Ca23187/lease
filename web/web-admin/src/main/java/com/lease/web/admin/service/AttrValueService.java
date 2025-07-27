@@ -7,7 +7,7 @@ import com.lease.model.entity.AttrValue;
 */
 public interface AttrValueService{
 
-    void saveAndUpdate(AttrValue attrValue);
+    void saveOrUpdate(AttrValue attrValue);
 
     void removeById(Long id);
 }

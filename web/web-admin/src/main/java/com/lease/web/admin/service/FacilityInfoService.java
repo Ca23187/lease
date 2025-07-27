@@ -12,7 +12,7 @@ public interface FacilityInfoService {
 
     List<FacilityInfo> list(ItemType type);
 
-    void saveAndUpload(FacilityInfo facilityInfo);
+    void saveOrUpload(FacilityInfo facilityInfo);
 
     void removeById(Long id);
 }

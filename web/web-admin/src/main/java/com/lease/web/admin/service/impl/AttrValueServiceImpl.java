@@ -20,7 +20,7 @@ public class AttrValueServiceImpl implements AttrValueService {
     }
 
     @Override
-    public void saveAndUpdate(AttrValue attrValue) {
+    public void saveOrUpdate(AttrValue attrValue) {
         repository.save(attrValue);
     }
 

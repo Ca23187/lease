@@ -5,8 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AttrValueDto {
+public class FeeValueDto {
     private Long id;
     private String name;
-    private Long attrKeyId;
+    private String unit;
+    private Long feeKeyId;
 }

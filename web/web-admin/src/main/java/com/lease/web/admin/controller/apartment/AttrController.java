@@ -33,7 +33,7 @@ public class AttrController {
     @Operation(summary = "新增或更新属性名称")
     @PostMapping("key/saveOrUpdate")
     public Result<Void> saveOrUpdateAttrKey(@RequestBody AttrKey attrKey) {
-        attrKeyService.saveAndUpdate(attrKey);
+        attrKeyService.saveOrUpdate(attrKey);
         return Result.ok();
     }
 
@@ -43,9 +43,10 @@ public class AttrController {
         AttrValue attrValue = new AttrValue();
         AttrKey attrKey = new AttrKey();
         attrKey.setId(dto.getAttrKeyId());
+        attrValue.setId(dto.getId());
         attrValue.setName(dto.getName());
         attrValue.setAttrKey(attrKey);
-        attrValueService.saveAndUpdate(attrValue);
+        attrValueService.saveOrUpdate(attrValue);
         return Result.ok();
     }
 

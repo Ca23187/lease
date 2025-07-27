@@ -27,7 +27,7 @@ public class LeaseTermServiceImpl implements LeaseTermService {
     }
 
     @Override
-    public void saveAndUpdate(LeaseTerm leaseTerm) {
+    public void saveOrUpdate(LeaseTerm leaseTerm) {
         repository.save(leaseTerm);
     }
 

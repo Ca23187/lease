@@ -10,7 +10,7 @@ import java.util.List;
 */
 public interface AttrKeyService{
 
-    void saveAndUpdate(AttrKey attrKey);
+    void saveOrUpdate(AttrKey attrKey);
 
     List<AttrKeyVo> listAttrInfo();
 

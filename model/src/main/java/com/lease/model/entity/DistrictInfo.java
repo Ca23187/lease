@@ -1,9 +1,9 @@
 package com.lease.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,8 +23,10 @@ public class DistrictInfo extends BaseEntity {
     @Column(name = "name")
     private String name;
 
-    @Schema(description = "所属城市id")
-    @Column(name = "city_id")
-    private Integer cityId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "city-district")
+    @JsonIgnore
+    @JoinColumn(name = "city_id")
+    private CityInfo cityInfo;
 
 }

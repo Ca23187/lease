@@ -31,7 +31,7 @@ public class LeaseTermController {
     @PostMapping("saveOrUpdate")
     @Operation(summary = "保存或更新租期信息")
     public Result<Void> saveOrUpdate(@RequestBody LeaseTerm leaseTerm) {
-        service.saveAndUpdate(leaseTerm);
+        service.saveOrUpdate(leaseTerm);
         return Result.ok();
     }
 

@@ -24,7 +24,7 @@ public class AttrKeyServiceImpl implements AttrKeyService {
     }
 
     @Override
-    public void saveAndUpdate(AttrKey attrKey) {
+    public void saveOrUpdate(AttrKey attrKey) {
         repository.save(attrKey);
     }
 

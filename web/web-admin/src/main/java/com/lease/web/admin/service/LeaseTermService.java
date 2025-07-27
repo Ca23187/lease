@@ -11,7 +11,7 @@ public interface LeaseTermService {
 
     public List<LeaseTerm> list();
 
-    public void saveAndUpdate(LeaseTerm leaseTerm);
+    public void saveOrUpdate(LeaseTerm leaseTerm);
 
     public void removeById(Long id);
 }

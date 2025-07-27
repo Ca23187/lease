@@ -27,7 +27,8 @@ public class AttrKey extends BaseEntity {
     @Column(name = "name")
     private String name;
 
-    @JsonManagedReference  // 阻止OneToMany和ManyToOne同时使用导致的递归序列化
+    @Schema(hidden = true)
+    @JsonManagedReference
     @OneToMany(mappedBy = "attrKey", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<AttrValue> attrValueList;
 

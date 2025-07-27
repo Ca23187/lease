@@ -1,11 +1,12 @@
 package com.lease.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.io.Serial;
 
@@ -13,6 +14,8 @@ import java.io.Serial;
 @Setter
 @Getter
 @Entity
+@SQLDelete(sql = "UPDATE fee_value SET is_deleted = 1 WHERE id = ?")
+@Where(clause = "is_deleted = 0")
 @Table(name = "fee_value")
 public class FeeValue extends BaseEntity {
 
@@ -27,8 +30,9 @@ public class FeeValue extends BaseEntity {
     @Column(name = "unit")
     private String unit;
 
-    @Schema(description = "费用所对的fee_key编码")
-    @Column(name = "fee_key_id")
-    private Long feeKeyId;
+    @JsonBackReference  // 阻止OneToMany和ManyToOne同时使用导致的递归序列化
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fee_key_id")
+    private FeeKey feeKey;
 
 }

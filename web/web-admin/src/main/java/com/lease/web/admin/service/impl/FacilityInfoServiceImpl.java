@@ -31,7 +31,7 @@ public class FacilityInfoServiceImpl implements FacilityInfoService {
     }
 
     @Override
-    public void saveAndUpload(FacilityInfo facilityInfo) {
+    public void saveOrUpload(FacilityInfo facilityInfo) {
         repository.save(facilityInfo);
     }
 

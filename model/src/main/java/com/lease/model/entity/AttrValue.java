@@ -26,10 +26,6 @@ public class AttrValue extends BaseEntity {
     @Column(name = "name")
     private String name;
 
-//    @Schema(description = "对应的属性key_id")
-//    @Column(name = "attr_key_id")
-//    private Long attrKeyId;
-
     @JsonBackReference  // 阻止OneToMany和ManyToOne同时使用导致的递归序列化
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "attr_key_id")
