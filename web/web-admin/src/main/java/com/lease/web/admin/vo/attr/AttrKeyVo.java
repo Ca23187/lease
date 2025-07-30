@@ -1,7 +1,6 @@
 package com.lease.web.admin.vo.attr;
 
-import com.lease.model.entity.AttrKey;
-import com.lease.model.entity.AttrValue;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,14 +10,16 @@ import java.util.List;
 
 @Getter
 @Setter
-public class AttrKeyVo extends AttrKey {
+public class AttrKeyVo {
+
+    @Schema(description = "属性key ID")
+    private Long id;
+
+    @Schema(description = "属性key名称")
+    private String name;
 
     @Schema(description = "属性value列表")
-    private List<AttrValue> attrValueList;
+    @JsonProperty("attrValueList")
+    private List<AttrValueVo> attrValueVoList;
 
-    public AttrKeyVo(Long id, String name, List<AttrValue> attrValueList) {
-        super.setId(id);
-        super.setName(name);
-        this.setAttrValueList(attrValueList);
-    }
 }

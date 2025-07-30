@@ -1,6 +1,5 @@
 package com.lease.web.admin.service;
 
-import com.lease.model.entity.CityInfo;
 import com.lease.model.entity.ProvinceInfo;
 
 import java.util.List;
@@ -12,5 +11,4 @@ public interface ProvinceInfoService {
 
     List<ProvinceInfo> list();
 
-    List<CityInfo> findAllById(Long id);
 }

@@ -1,4 +1,4 @@
-package com.lease.web.admin.dto;
+package com.lease.web.admin.dto.attr;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package com.lease.web.admin.vo.graph;
+package com.lease.web.admin.dto.graph;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

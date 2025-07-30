@@ -1,7 +1,7 @@
-package com.lease.web.admin.vo.room;
+package com.lease.web.admin.dto.room;
 
 import com.lease.model.entity.RoomInfo;
-import com.lease.web.admin.vo.graph.GraphVo;
+import com.lease.web.admin.dto.graph.GraphVo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,9 @@ import java.util.List;
 @Getter
 @Setter
 @Schema(description = "房间信息")
-public class RoomSubmitVo extends RoomInfo {
+public class RoomSubmitDto extends RoomInfo {
+
+    private Long apartmentId;
 
     @Schema(description = "图片列表")
     private List<GraphVo> graphVoList;

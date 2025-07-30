@@ -1,7 +1,6 @@
 package com.lease.web.admin.vo.fee;
 
-import com.lease.model.entity.FeeKey;
-import com.lease.model.entity.FeeValue;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,14 +10,15 @@ import java.util.List;
 
 @Getter
 @Setter
-public class FeeKeyVo extends FeeKey {
+public class FeeKeyVo {
 
+    @Schema(description = "主键 ID")
+    private Long id;
+
+    @Schema(description = "杂费名称")
+    private String name;
+
+    @JsonProperty("feeValueList")
     @Schema(description = "杂费value列表")
-    private List<FeeValue> feeValueList;
-
-    public FeeKeyVo(Long id, String name, List<FeeValue> feeValueList) {
-        super.setId(id);
-        super.setName(name);
-        this.setFeeValueList(feeValueList);
-    }
+    private List<FeeValueVo> feeValueVoList;
 }

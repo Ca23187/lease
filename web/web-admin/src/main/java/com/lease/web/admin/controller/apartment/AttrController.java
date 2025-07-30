@@ -3,8 +3,8 @@ package com.lease.web.admin.controller.apartment;
 
 import com.lease.common.result.Result;
 import com.lease.model.entity.AttrKey;
-import com.lease.model.entity.AttrValue;
-import com.lease.web.admin.dto.AttrValueDto;
+import com.lease.web.admin.dto.attr.AttrValueDto;
+import com.lease.web.admin.mapper.attr.AttrValueMapper;
 import com.lease.web.admin.service.AttrKeyService;
 import com.lease.web.admin.service.AttrValueService;
 import com.lease.web.admin.vo.attr.AttrKeyVo;
@@ -23,11 +23,14 @@ public class AttrController {
 
     private final AttrKeyService attrKeyService;
     private final AttrValueService attrValueService;
+    private final AttrValueMapper attrValueMapper;
 
     @Autowired
-    public AttrController(AttrKeyService attrKeyService, AttrValueService attrValueService) {
+    public AttrController(AttrKeyService attrKeyService, AttrValueService attrValueService,
+                          AttrValueMapper attrValueMapper) {
         this.attrKeyService = attrKeyService;
         this.attrValueService = attrValueService;
+        this.attrValueMapper = attrValueMapper;
     }
 
     @Operation(summary = "新增或更新属性名称")
@@ -39,14 +42,8 @@ public class AttrController {
 
     @Operation(summary = "新增或更新属性值")
     @PostMapping("value/saveOrUpdate")
-    public Result<Void> saveOrUpdateAttrValue(@RequestBody AttrValueDto dto) {
-        AttrValue attrValue = new AttrValue();
-        AttrKey attrKey = new AttrKey();
-        attrKey.setId(dto.getAttrKeyId());
-        attrValue.setId(dto.getId());
-        attrValue.setName(dto.getName());
-        attrValue.setAttrKey(attrKey);
-        attrValueService.saveOrUpdate(attrValue);
+    public Result<Void> saveOrUpdateAttrValue(@RequestBody AttrValueDto attrValueDto) {
+        attrValueService.saveOrUpdate(attrValueMapper.toEntity(attrValueDto));
         return Result.ok();
     }
 

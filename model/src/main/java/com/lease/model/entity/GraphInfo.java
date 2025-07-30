@@ -8,6 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.io.Serial;
 
@@ -15,6 +17,8 @@ import java.io.Serial;
 @Setter
 @Getter
 @Entity
+@SQLDelete(sql = "UPDATE graph_info SET is_deleted = 1 WHERE id = ?")
+@Where(clause = "is_deleted = 0")
 @Table(name = "graph_info")
 public class GraphInfo extends BaseEntity {
 
@@ -30,12 +34,11 @@ public class GraphInfo extends BaseEntity {
     @Convert(converter = ItemType.ItemTypeToIntegerConverter.class)
     private ItemType itemType;
 
-    @Schema(description = "图片所有对象id")
-    @Column(name = "item_id")
-    private Long itemId;
-
     @Schema(description = "图片地址")
     @Column(name = "url")
     private String url;
+
+    @Column(name = "item_id")
+    private Long itemId;
 
 }

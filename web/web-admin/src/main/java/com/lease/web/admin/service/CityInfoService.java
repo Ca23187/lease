@@ -1,6 +1,6 @@
 package com.lease.web.admin.service;
 
-import com.lease.model.entity.DistrictInfo;
+import com.lease.model.entity.CityInfo;
 
 import java.util.List;
 
@@ -9,5 +9,5 @@ import java.util.List;
 */
 public interface CityInfoService {
 
-    List<DistrictInfo> findAllById(Long id);
+    List<CityInfo> findAllByProvinceId(Long id);
 }

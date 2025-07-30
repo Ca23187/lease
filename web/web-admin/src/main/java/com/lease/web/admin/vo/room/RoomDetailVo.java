@@ -1,8 +1,8 @@
 package com.lease.web.admin.vo.room;
 
-import com.lease.model.entity.*;
-import com.lease.web.admin.vo.attr.AttrValueVo;
-import com.lease.web.admin.vo.graph.GraphVo;
+import com.lease.model.entity.RoomInfo;
+import com.lease.web.admin.dto.graph.GraphVo;
+import com.lease.web.admin.vo.attr.AttrValueVoWithName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,24 +15,10 @@ import java.util.List;
 @Setter
 public class RoomDetailVo extends RoomInfo {
 
-    @Schema(description = "所属公寓信息")
-    private ApartmentInfo apartmentInfo;
-
     @Schema(description = "图片列表")
     private List<GraphVo> graphVoList;
 
     @Schema(description = "属性信息列表")
-    private List<AttrValueVo> attrValueVoList;
+    private List<AttrValueVoWithName> attrValueVoList;
 
-    @Schema(description = "配套信息列表")
-    private List<FacilityInfo> facilityInfoList;
-
-    @Schema(description = "标签信息列表")
-    private List<LabelInfo> labelInfoList;
-
-    @Schema(description = "支付方式列表")
-    private List<PaymentType> paymentTypeList;
-
-    @Schema(description = "可选租期列表")
-    private List<LeaseTerm> leaseTermList;
 }

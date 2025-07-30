@@ -27,13 +27,6 @@ public class ProvinceInfoServiceImpl implements ProvinceInfoService{
     public List<ProvinceInfo> list() {
         return repository.findAll();
     }
-
-    @Override
-    public List<CityInfo> findAllById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("找不到ID为 " + id + " 的对象"))
-                .getCityInfoList();
-    }
 }
 
 

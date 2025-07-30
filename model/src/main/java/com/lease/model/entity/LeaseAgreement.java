@@ -1,15 +1,15 @@
 package com.lease.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lease.model.enums.LeaseSourceType;
 import com.lease.model.enums.LeaseStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.io.Serial;
 import java.math.BigDecimal;
@@ -19,6 +19,8 @@ import java.util.Date;
 @Setter
 @Getter
 @Entity
+@SQLDelete(sql = "UPDATE lease_agreement SET is_deleted = 1 WHERE id = ?")
+@Where(clause = "is_deleted = 0")
 @Table(name = "lease_agreement")
 public class LeaseAgreement extends BaseEntity {
 
@@ -38,12 +40,16 @@ public class LeaseAgreement extends BaseEntity {
     private String identificationNumber;
 
     @Schema(description = "签约公寓id")
-    @Column(name = "apartment_id")
-    private Long apartmentId;
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "apartment_id")
+    private ApartmentInfo apartmentInfo;
 
-    @Schema(description = "签约房间id")
-    @Column(name = "room_id")
-    private Long roomId;
+    @Schema(description = "签约房间")
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id")
+    private RoomInfo roomInfo;
 
     @Schema(description = "租约开始日期")
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -67,9 +73,11 @@ public class LeaseAgreement extends BaseEntity {
     @Column(name = "deposit")
     private BigDecimal deposit;
 
-    @Schema(description = "支付类型id")
-    @Column(name = "payment_type_id")
-    private Long paymentTypeId;
+    @Schema(description = "支付类型")
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_type_id")
+    private PaymentType paymentType;
 
     @Schema(description = "租约状态")
     @Column(name = "status")

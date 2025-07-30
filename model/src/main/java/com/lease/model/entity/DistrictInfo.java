@@ -1,17 +1,17 @@
 package com.lease.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serial;
 
 @Schema(description = "地区信息表")
-@Setter
 @Getter
+@Setter
 @Entity
 @Table(name = "district_info")
 public class DistrictInfo extends BaseEntity {
@@ -23,10 +23,8 @@ public class DistrictInfo extends BaseEntity {
     @Column(name = "name")
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonManagedReference(value = "city-district")
-    @JsonIgnore
-    @JoinColumn(name = "city_id")
-    private CityInfo cityInfo;
+    @Schema(description = "所属城市id")
+    @Column(name = "city_id")
+    private Long cityId;
 
 }

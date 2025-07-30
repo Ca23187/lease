@@ -1,9 +1,8 @@
 package com.lease.web.admin.service.impl;
 
-import com.lease.model.entity.DistrictInfo;
+import com.lease.model.entity.CityInfo;
 import com.lease.web.admin.repository.CityInfoRepository;
 import com.lease.web.admin.service.CityInfoService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +22,8 @@ public class CityInfoServiceImpl implements CityInfoService{
     }
 
     @Override
-    public List<DistrictInfo> findAllById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("找不到ID为 " + id + " 的对象"))
-                .getDistrictInfoList();
+    public List<CityInfo> findAllByProvinceId(Long id) {
+        return repository.findAllByProvinceId(id);
     }
 }
 

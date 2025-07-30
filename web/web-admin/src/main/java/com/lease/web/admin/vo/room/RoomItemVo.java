@@ -1,26 +1,48 @@
 package com.lease.web.admin.vo.room;
 
-import com.lease.model.entity.ApartmentInfo;
-import com.lease.model.entity.RoomInfo;
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.lease.model.enums.ReleaseStatus;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.Date;
-
 
 @Getter
 @Setter
-@Schema(description = "房间信息")
-public class RoomItemVo extends RoomInfo {
+public class RoomItemVo {
 
-    @Schema(description = "租约结束日期")
-    private Date leaseEndDate;
+    private Long id;
 
-    @Schema(description = "当前入住状态")
+    private String roomNumber;
+
+    private BigDecimal rent;
+
+    private Long apartmentId;
+
+    private ReleaseStatus isRelease;
+
     private Boolean isCheckIn;
 
-    @Schema(description = "所属公寓信息")
+    private Date leaseEndDate;
+
     private ApartmentInfo apartmentInfo;
 
+    @Getter
+    @Setter
+    public static class ApartmentInfo {
+        private Long id;
+        private String name;
+        private String introduction;
+        private Long districtId;
+        private String districtName;
+        private Long cityId;
+        private String cityName;
+        private Long provinceId;
+        private String provinceName;
+        private String addressDetail;
+        private String latitude;
+        private String longitude;
+        private String phone;
+        private Integer isRelease;
+    }
 }

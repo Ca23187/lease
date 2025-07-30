@@ -25,11 +25,13 @@ public class RegionInfoController {
 
     private final ProvinceInfoService provinceInfoService;
     private final CityInfoService cityInfoService;
+    private final DistrictInfoService districtInfoService;
 
     @Autowired
-    public RegionInfoController(ProvinceInfoService provinceInfoService, CityInfoService cityInfoService, DistrictInfoService districtInfoService) {
+    public RegionInfoController(ProvinceInfoService provinceInfoService, CityInfoService cityInfoService, DistrictInfoService districtInfoService, DistrictInfoService districtInfoService1) {
         this.provinceInfoService = provinceInfoService;
         this.cityInfoService = cityInfoService;
+        this.districtInfoService = districtInfoService1;
     }
 
     @Operation(summary = "查询省份信息列表")
@@ -41,13 +43,13 @@ public class RegionInfoController {
     @Operation(summary = "根据省份id查询城市信息列表")
     @GetMapping("city/listByProvinceId")
     public Result<List<CityInfo>> listCityInfoByProvinceId(@RequestParam Long id) {
-        return Result.ok(provinceInfoService.findAllById(id));
+        return Result.ok(cityInfoService.findAllByProvinceId(id));
     }
 
     @GetMapping("district/listByCityId")
     @Operation(summary = "根据城市id查询区县信息")
     public Result<List<DistrictInfo>> listDistrictInfoByCityId(@RequestParam Long id) {
-        return Result.ok(cityInfoService.findAllById(id));
+        return Result.ok(districtInfoService.findAllByCityId(id));
     }
 
 }
