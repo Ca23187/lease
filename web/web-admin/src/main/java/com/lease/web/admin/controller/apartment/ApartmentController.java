@@ -3,12 +3,12 @@ package com.lease.web.admin.controller.apartment;
 
 import com.lease.common.result.Result;
 import com.lease.model.enums.ReleaseStatus;
+import com.lease.web.admin.dto.apartment.ApartmentQueryDto;
 import com.lease.web.admin.dto.apartment.ApartmentSubmitDto;
 import com.lease.web.admin.service.ApartmentInfoService;
 import com.lease.web.admin.vo.apartment.ApartmentDetailVo;
 import com.lease.web.admin.vo.apartment.ApartmentInfoVo;
 import com.lease.web.admin.vo.apartment.ApartmentItemVo;
-import com.lease.web.admin.vo.apartment.ApartmentQueryVo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +44,9 @@ public class ApartmentController {
     public Result<Page<ApartmentItemVo>> pageItem(
             @RequestParam int page,
             @RequestParam int size,
-            ApartmentQueryVo queryVo) {
+            ApartmentQueryDto queryDto) {
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<ApartmentItemVo> result = apartmentInfoService.pageApartments(queryVo, pageable);
+        Page<ApartmentItemVo> result = apartmentInfoService.pageApartments(queryDto, pageable);
         return Result.ok(result);
     }
 

@@ -1,23 +1,20 @@
 package com.lease.web.admin.vo.apartment;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.lease.model.enums.ReleaseStatus;
 
-@Getter
-@Setter
-public class ApartmentInfoVo {
-    private Long id;
-    private String name;
-    private String introduction;
-    private Long districtId;
-    private String districtName;
-    private Long cityId;
-    private String cityName;
-    private Long provinceId;
-    private String provinceName;
-    private String addressDetail;
-    private String latitude;
-    private String longitude;
-    private String phone;
-    private Integer isRelease;
+public interface ApartmentInfoVo {
+    Long getId();
+    String getName();
+    String getIntroduction();
+    Long getDistrictId();
+    String getDistrictName();
+    Long getCityId();
+    String getCityName();
+    Long getProvinceId();
+    String getProvinceName();
+    String getAddressDetail();
+    String getLatitude();
+    String getLongitude();
+    String getPhone();
+    ReleaseStatus getIsRelease();
 }

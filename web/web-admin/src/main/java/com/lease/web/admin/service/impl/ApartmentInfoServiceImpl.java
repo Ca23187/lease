@@ -6,21 +6,16 @@ import com.lease.model.entity.ApartmentInfo;
 import com.lease.model.entity.GraphInfo;
 import com.lease.model.enums.ItemType;
 import com.lease.model.enums.ReleaseStatus;
-import com.lease.web.admin.controller.projection.apartment.ApartmentItemVoProjection;
+import com.lease.web.admin.dto.apartment.ApartmentQueryDto;
 import com.lease.web.admin.dto.apartment.ApartmentSubmitDto;
 import com.lease.web.admin.mapper.apartment.ApartmentInfoMapper;
-import com.lease.web.admin.mapper.apartment.ApartmentItemVoProjectionMapper;
-import com.lease.web.admin.mapper.fee.FeeValueWithNameMapper;
-import com.lease.web.admin.mapper.graph.GraphInfoMapper;
 import com.lease.web.admin.repository.*;
 import com.lease.web.admin.service.ApartmentInfoService;
 import com.lease.web.admin.vo.apartment.ApartmentDetailVo;
 import com.lease.web.admin.vo.apartment.ApartmentInfoVo;
 import com.lease.web.admin.vo.apartment.ApartmentItemVo;
-import com.lease.web.admin.vo.apartment.ApartmentQueryVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,24 +33,18 @@ public class ApartmentInfoServiceImpl implements ApartmentInfoService {
     private final LabelInfoRepository labelInfoRepository;
     private final FeeValueRepository feeValueRepository;
     private final ApartmentInfoMapper apartmentInfoMapper;
-    private final GraphInfoMapper graphInfoMapper;
-    private final ApartmentItemVoProjectionMapper apartmentItemVoProjectionMapper;
     private final RoomInfoRepository roomInfoRepository;
-    private final FeeValueWithNameMapper feeValueWithNameMapper;
     private final GraphInfoRepository graphInfoRepository;
 
     @Autowired
     public ApartmentInfoServiceImpl(ApartmentInfoRepository apartmentInfoRepository, FacilityInfoRepository facilityInfoRepository, LabelInfoRepository labelInfoRepository, FeeValueRepository feeValueRepository, ApartmentInfoMapper apartmentInfoMapper,
-                                    GraphInfoMapper graphInfoMapper, ApartmentItemVoProjectionMapper apartmentItemVoProjectionMapper, RoomInfoRepository roomInfoRepository, FeeValueWithNameMapper feeValueWithNameMapper, GraphInfoRepository graphInfoRepository) {
+                                    RoomInfoRepository roomInfoRepository, GraphInfoRepository graphInfoRepository) {
         this.apartmentInfoRepository = apartmentInfoRepository;
         this.facilityInfoRepository = facilityInfoRepository;
         this.labelInfoRepository = labelInfoRepository;
         this.feeValueRepository = feeValueRepository;
         this.apartmentInfoMapper = apartmentInfoMapper;
-        this.graphInfoMapper = graphInfoMapper;
-        this.apartmentItemVoProjectionMapper = apartmentItemVoProjectionMapper;
         this.roomInfoRepository = roomInfoRepository;
-        this.feeValueWithNameMapper = feeValueWithNameMapper;
         this.graphInfoRepository = graphInfoRepository;
     }
 
@@ -91,15 +80,13 @@ public class ApartmentInfoServiceImpl implements ApartmentInfoService {
     }
 
     @Override
-    public Page<ApartmentItemVo> pageApartments(ApartmentQueryVo queryVo, Pageable pageable) {
-        Page<ApartmentItemVoProjection> pageProjection = apartmentInfoRepository.pageApartmentItemProjections(
-                queryVo.getProvinceId(),
-                queryVo.getCityId(),
-                queryVo.getDistrictId(),
+    public Page<ApartmentItemVo> pageApartments(ApartmentQueryDto queryDto, Pageable pageable) {
+        return apartmentInfoRepository.pageApartmentItems(
+                queryDto.getProvinceId(),
+                queryDto.getCityId(),
+                queryDto.getDistrictId(),
                 pageable
         );
-        List<ApartmentItemVo> voList = apartmentItemVoProjectionMapper.toVoList(pageProjection.getContent());
-        return new PageImpl<>(voList, pageable, pageProjection.getTotalElements());
     }
 
     @Override
@@ -107,8 +94,8 @@ public class ApartmentInfoServiceImpl implements ApartmentInfoService {
         ApartmentInfo apartmentInfo = apartmentInfoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("未找到指定的公寓信息"));
         ApartmentDetailVo apartmentDetailVo = apartmentInfoMapper.toDetailVo(apartmentInfo);
-        apartmentDetailVo.setFeeValueVoList(feeValueWithNameMapper.toVoListWithName(apartmentInfo.getFeeValueList()));
-        apartmentDetailVo.setGraphVoList(graphInfoMapper.toVoList(apartmentInfo.getGraphInfoList()));
+        apartmentDetailVo.setFeeValueVoList(feeValueRepository.findAllFeeValueVoByApartmentId(id));
+        apartmentDetailVo.setGraphVoList(graphInfoRepository.findAllGraphVoById(id, ItemType.APARTMENT));
         return apartmentDetailVo;
     }
 
@@ -125,12 +112,12 @@ public class ApartmentInfoServiceImpl implements ApartmentInfoService {
     @Override
     @Transactional
     public void updateReleaseStatusById(Long id, ReleaseStatus status) {
-        apartmentInfoRepository.updateReleaseStatusById(id, status.getCode());
+        apartmentInfoRepository.updateReleaseStatusById(id, status);
     }
 
     @Override
     public List<ApartmentInfoVo> listInfoByDistrictId(Long id) {
-        return apartmentInfoMapper.toVoList(apartmentInfoRepository.findByDistrictId(id));
+        return apartmentInfoRepository.findByDistrictId(id);
     }
 
 }

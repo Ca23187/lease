@@ -1,6 +1,5 @@
 package com.lease.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.lease.model.enums.ReleaseStatus;
@@ -40,8 +39,9 @@ public class RoomInfo extends BaseEntity {
     @Convert(converter = ReleaseStatus.ReleaseStatusToIntegerConverter.class)
     private ReleaseStatus isRelease;
 
-    @JsonIgnore
-    @JsonBackReference
+    @Transient
+    private Long apartmentId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "apartment_id")
     private ApartmentInfo apartmentInfo;

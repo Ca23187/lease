@@ -1,11 +1,11 @@
-package com.lease.web.admin.vo.appointment;
+package com.lease.web.admin.dto.appointment;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
 @Schema(description = "预约看房查询实体")
-public class AppointmentQueryVo {
+public class AppointmentQueryDto {
 
 
     @Schema(description="预约公寓所在省份")

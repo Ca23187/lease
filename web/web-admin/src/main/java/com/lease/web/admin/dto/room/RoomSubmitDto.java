@@ -14,8 +14,6 @@ import java.util.List;
 @Schema(description = "房间信息")
 public class RoomSubmitDto extends RoomInfo {
 
-    private Long apartmentId;
-
     @Schema(description = "图片列表")
     private List<GraphVo> graphVoList;
 

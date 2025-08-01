@@ -3,11 +3,9 @@ package com.lease.web.admin.controller.apartment;
 
 import com.lease.common.result.Result;
 import com.lease.model.entity.AttrKey;
-import com.lease.web.admin.dto.attr.AttrValueDto;
-import com.lease.web.admin.mapper.attr.AttrValueMapper;
+import com.lease.model.entity.AttrValue;
 import com.lease.web.admin.service.AttrKeyService;
 import com.lease.web.admin.service.AttrValueService;
-import com.lease.web.admin.vo.attr.AttrKeyVo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +21,11 @@ public class AttrController {
 
     private final AttrKeyService attrKeyService;
     private final AttrValueService attrValueService;
-    private final AttrValueMapper attrValueMapper;
 
     @Autowired
-    public AttrController(AttrKeyService attrKeyService, AttrValueService attrValueService,
-                          AttrValueMapper attrValueMapper) {
+    public AttrController(AttrKeyService attrKeyService, AttrValueService attrValueService) {
         this.attrKeyService = attrKeyService;
         this.attrValueService = attrValueService;
-        this.attrValueMapper = attrValueMapper;
     }
 
     @Operation(summary = "新增或更新属性名称")
@@ -42,15 +37,18 @@ public class AttrController {
 
     @Operation(summary = "新增或更新属性值")
     @PostMapping("value/saveOrUpdate")
-    public Result<Void> saveOrUpdateAttrValue(@RequestBody AttrValueDto attrValueDto) {
-        attrValueService.saveOrUpdate(attrValueMapper.toEntity(attrValueDto));
+    public Result<Void> saveOrUpdateAttrValue(@RequestBody AttrValue attrValue) {
+        AttrKey attrKey = new AttrKey();
+        attrKey.setId(attrValue.getAttrKeyId());
+        attrValue.setAttrKey(attrKey);
+        attrValueService.saveOrUpdate(attrValue);
         return Result.ok();
     }
 
 
     @Operation(summary = "查询全部属性名称和属性值列表")
     @GetMapping("list")
-    public Result<List<AttrKeyVo>> listAttrInfo() {
+    public Result<List<AttrKey>> listAttrInfo() {
         return Result.ok(attrKeyService.listAttrInfo());
     }
 

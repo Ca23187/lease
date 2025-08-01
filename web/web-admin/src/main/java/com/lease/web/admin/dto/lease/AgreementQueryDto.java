@@ -1,11 +1,11 @@
-package com.lease.web.admin.vo.agreement;
+package com.lease.web.admin.dto.lease;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
 @Schema(description = "租约查询实体")
-public class AgreementQueryVo {
+public class AgreementQueryDto {
 
     @Schema(description = "公寓所处省份id")
     private Long provinceId;

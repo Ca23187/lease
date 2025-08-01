@@ -1,11 +1,11 @@
 package com.lease.web.admin.service;
 
 import com.lease.model.enums.ReleaseStatus;
+import com.lease.web.admin.dto.apartment.ApartmentQueryDto;
 import com.lease.web.admin.dto.apartment.ApartmentSubmitDto;
 import com.lease.web.admin.vo.apartment.ApartmentDetailVo;
 import com.lease.web.admin.vo.apartment.ApartmentInfoVo;
 import com.lease.web.admin.vo.apartment.ApartmentItemVo;
-import com.lease.web.admin.vo.apartment.ApartmentQueryVo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -18,7 +18,7 @@ public interface ApartmentInfoService {
 
     void saveOrUpdate(ApartmentSubmitDto dto);
 
-    Page<ApartmentItemVo> pageApartments(ApartmentQueryVo queryVo, Pageable pageable);
+    Page<ApartmentItemVo> pageApartments(ApartmentQueryDto queryDto, Pageable pageable);
 
     ApartmentDetailVo getDetailById(Long id);
 

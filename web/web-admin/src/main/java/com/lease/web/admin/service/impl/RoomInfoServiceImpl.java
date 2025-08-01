@@ -3,22 +3,17 @@ package com.lease.web.admin.service.impl;
 import com.lease.model.entity.GraphInfo;
 import com.lease.model.entity.RoomInfo;
 import com.lease.model.enums.ItemType;
-import com.lease.web.admin.controller.projection.room.RoomItemVoProjection;
+import com.lease.model.enums.ReleaseStatus;
+import com.lease.web.admin.dto.room.RoomQueryDto;
 import com.lease.web.admin.dto.room.RoomSubmitDto;
-import com.lease.web.admin.mapper.apartment.ApartmentItemVoProjectionMapper;
-import com.lease.web.admin.mapper.attr.AttrValueWithNameMapper;
-import com.lease.web.admin.mapper.graph.GraphInfoMapper;
 import com.lease.web.admin.mapper.room.RoomInfoMapper;
-import com.lease.web.admin.mapper.room.RoomItemVoProjectionMapper;
 import com.lease.web.admin.repository.*;
 import com.lease.web.admin.service.RoomInfoService;
 import com.lease.web.admin.vo.room.RoomDetailVo;
 import com.lease.web.admin.vo.room.RoomInfoVo;
 import com.lease.web.admin.vo.room.RoomItemVo;
-import com.lease.web.admin.vo.room.RoomQueryVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,13 +33,10 @@ public class RoomInfoServiceImpl implements RoomInfoService {
     private final LabelInfoRepository labelInfoRepository;
     private final PaymentTypeRepository paymentTypeRepository;
     private final LeaseTermRepository leaseTermRepository;
-    private final RoomItemVoProjectionMapper roomItemVoProjectionMapper;
-    private final AttrValueWithNameMapper attrValueWithNameMapper;
-    private final GraphInfoMapper graphInfoMapper;
     private final GraphInfoRepository graphInfoRepository;
 
     @Autowired
-    public RoomInfoServiceImpl(RoomInfoRepository roomInfoRepository, RoomInfoMapper roomInfoMapper, AttrValueRepository attrValueRepository, FacilityInfoRepository facilityInfoRepository, LabelInfoRepository labelInfoRepository, PaymentTypeRepository paymentTypeRepository, LeaseTermRepository leaseTermRepository, ApartmentItemVoProjectionMapper apartmentItemVoProjectionMapper, RoomItemVoProjectionMapper roomItemVoProjectionMapper, AttrValueWithNameMapper attrValueWithNameMapper, GraphInfoMapper graphInfoMapper, GraphInfoRepository graphInfoRepository) {
+    public RoomInfoServiceImpl(RoomInfoRepository roomInfoRepository, RoomInfoMapper roomInfoMapper, AttrValueRepository attrValueRepository, FacilityInfoRepository facilityInfoRepository, LabelInfoRepository labelInfoRepository, PaymentTypeRepository paymentTypeRepository, LeaseTermRepository leaseTermRepository, GraphInfoRepository graphInfoRepository) {
         this.roomInfoRepository = roomInfoRepository;
         this.roomInfoMapper = roomInfoMapper;
         this.attrValueRepository = attrValueRepository;
@@ -52,9 +44,6 @@ public class RoomInfoServiceImpl implements RoomInfoService {
         this.labelInfoRepository = labelInfoRepository;
         this.paymentTypeRepository = paymentTypeRepository;
         this.leaseTermRepository = leaseTermRepository;
-        this.roomItemVoProjectionMapper = roomItemVoProjectionMapper;
-        this.attrValueWithNameMapper = attrValueWithNameMapper;
-        this.graphInfoMapper = graphInfoMapper;
         this.graphInfoRepository = graphInfoRepository;
     }
 
@@ -94,19 +83,17 @@ public class RoomInfoServiceImpl implements RoomInfoService {
     }
 
     @Override
-    public Page<RoomItemVo> pageRooms(RoomQueryVo queryVo, Pageable pageable) {
-        Page<RoomItemVoProjection> pageProjection = roomInfoRepository.pageRoomItemProjections(queryVo, pageable);
-        List<RoomItemVo> voList = roomItemVoProjectionMapper.toVoList(pageProjection.getContent());
-        return new PageImpl<>(voList, pageable, pageProjection.getTotalElements());
+    public Page<RoomItemVo> pageRooms(RoomQueryDto queryDto, Pageable pageable) {
+        return roomInfoRepository.pageRoomItems(queryDto, pageable);
     }
 
     @Override
     public RoomDetailVo getDetailById(Long id) {
-        RoomInfo roomInfo = roomInfoRepository.findById(id)
+        RoomInfo roomInfo = roomInfoRepository.findWithApartmentById(id)
                 .orElseThrow(() -> new RuntimeException("未找到指定的房间信息"));
         RoomDetailVo roomDetailVo = roomInfoMapper.toDetailVo(roomInfo);
-        roomDetailVo.setAttrValueVoList(attrValueWithNameMapper.toVoListWithName(roomInfo.getAttrValueList()));
-        roomDetailVo.setGraphVoList(graphInfoMapper.toVoList(roomInfo.getGraphInfoList()));
+        roomDetailVo.setAttrValueVoList(attrValueRepository.findAllAttrValueVoByApartmentId(id));
+        roomDetailVo.setGraphVoList(graphInfoRepository.findAllGraphVoById(id, ItemType.ROOM));
         return roomDetailVo;
     }
 
@@ -119,7 +106,12 @@ public class RoomInfoServiceImpl implements RoomInfoService {
 
     @Override
     public List<RoomInfoVo> listBasicByApartmentId(Long id) {
-        return roomInfoMapper.toVoList(roomInfoRepository.findByApartmentInfo_Id(id));
+        return roomInfoRepository.findAllBasicRoomInfoVo();
+    }
+
+    @Override
+    public void updateReleaseStatusById(Long id, ReleaseStatus status) {
+        roomInfoRepository.updateReleaseStatusById(id, status);
     }
 }
 

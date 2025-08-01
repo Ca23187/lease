@@ -1,8 +1,10 @@
 package com.lease.web.admin.vo.room;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.lease.model.entity.ApartmentInfo;
 import com.lease.model.entity.RoomInfo;
 import com.lease.web.admin.dto.graph.GraphVo;
-import com.lease.web.admin.vo.attr.AttrValueVoWithName;
+import com.lease.web.admin.vo.attr.AttrValueVo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,6 +21,9 @@ public class RoomDetailVo extends RoomInfo {
     private List<GraphVo> graphVoList;
 
     @Schema(description = "属性信息列表")
-    private List<AttrValueVoWithName> attrValueVoList;
+    private List<AttrValueVo> attrValueVoList;
+
+    @JsonIgnoreProperties({"facilityInfoList", "labelInfoList"})
+    private ApartmentInfo apartmentInfo;
 
 }

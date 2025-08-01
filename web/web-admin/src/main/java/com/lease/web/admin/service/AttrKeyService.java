@@ -1,7 +1,6 @@
 package com.lease.web.admin.service;
 
 import com.lease.model.entity.AttrKey;
-import com.lease.web.admin.vo.attr.AttrKeyVo;
 
 import java.util.List;
 
@@ -12,7 +11,7 @@ public interface AttrKeyService{
 
     void saveOrUpdate(AttrKey attrKey);
 
-    List<AttrKeyVo> listAttrInfo();
+    List<AttrKey> listAttrInfo();
 
     void removeById(Long id);
 }

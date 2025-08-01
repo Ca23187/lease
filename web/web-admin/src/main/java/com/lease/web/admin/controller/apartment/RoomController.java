@@ -8,7 +8,7 @@ import com.lease.web.admin.service.RoomInfoService;
 import com.lease.web.admin.vo.room.RoomDetailVo;
 import com.lease.web.admin.vo.room.RoomInfoVo;
 import com.lease.web.admin.vo.room.RoomItemVo;
-import com.lease.web.admin.vo.room.RoomQueryVo;
+import com.lease.web.admin.dto.room.RoomQueryDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +43,9 @@ public class RoomController {
     public Result<Page<RoomItemVo>> pageItem(
             @RequestParam int page,
             @RequestParam int size,
-            RoomQueryVo queryVo) {
+            RoomQueryDto queryDto) {
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<RoomItemVo> result = roomInfoService.pageRooms(queryVo, pageable);
+        Page<RoomItemVo> result = roomInfoService.pageRooms(queryDto, pageable);
         return Result.ok(result);
     }
 
@@ -57,14 +57,15 @@ public class RoomController {
 
     @Operation(summary = "根据id删除房间信息")
     @DeleteMapping("removeById")
-    public Result removeById(@RequestParam Long id) {
+    public Result<Void> removeById(@RequestParam Long id) {
         roomInfoService.removeById(id);
         return Result.ok();
     }
 
     @Operation(summary = "根据id修改房间发布状态")
     @PostMapping("updateReleaseStatusById")
-    public Result updateReleaseStatusById(Long id, ReleaseStatus status) {
+    public Result<Void> updateReleaseStatusById(Long id, ReleaseStatus status) {
+        roomInfoService.updateReleaseStatusById(id, status);
         return Result.ok();
     }
 

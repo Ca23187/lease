@@ -1,6 +1,7 @@
 package com.lease.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -26,6 +27,10 @@ public class AttrValue extends BaseEntity {
     @Column(name = "name")
     private String name;
 
+    @Transient
+    private Long attrKeyId;
+
+    @Hidden
     @JsonBackReference  // 阻止OneToMany和ManyToOne同时使用导致的递归序列化
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "attr_key_id")

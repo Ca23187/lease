@@ -1,13 +1,14 @@
 package com.lease.web.admin.repository;
 
 import com.lease.model.entity.ApartmentInfo;
-import com.lease.web.admin.controller.projection.apartment.ApartmentItemVoProjection;
+import com.lease.model.enums.ReleaseStatus;
+import com.lease.web.admin.vo.apartment.ApartmentInfoVo;
+import com.lease.web.admin.vo.apartment.ApartmentItemVo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -62,16 +63,35 @@ public interface ApartmentInfoRepository extends JpaRepository<ApartmentInfo, Lo
                 """,
             nativeQuery = true
     )
-    Page<ApartmentItemVoProjection> pageApartmentItemProjections(@Param("provinceId") Long provinceId,
-                                                                 @Param("cityId") Long cityId,
-                                                                 @Param("districtId") Long districtId,
-                                                                 Pageable pageable);
+    Page<ApartmentItemVo> pageApartmentItems(Long provinceId,
+                                             Long cityId,
+                                             Long districtId,
+                                             Pageable pageable);
 
     @Modifying
-    @Query(value = "UPDATE apartment_info SET is_release = :status WHERE id = :id", nativeQuery = true)
-        void updateReleaseStatusById(Long id, Integer status);
+    @Query(value = "UPDATE ApartmentInfo ai SET ai.isRelease = :status WHERE ai.id = :id")
+    void updateReleaseStatusById(Long id, ReleaseStatus status);
 
-    List<ApartmentInfo> findByDistrictId(Long districtId);
+    @Query("""
+        SELECT
+            a.id AS id,
+            a.name AS name,
+            a.introduction AS introduction,
+            a.districtId AS districtId,
+            a.districtName AS districtName,
+            a.cityId AS cityId,
+            a.cityName AS cityName,
+            a.provinceId AS provinceId,
+            a.provinceName AS provinceName,
+            a.addressDetail AS addressDetail,
+            a.latitude AS latitude,
+            a.longitude AS longitude,
+            a.phone AS phone,
+            a.isRelease AS isRelease
+        FROM ApartmentInfo a
+        WHERE a.districtId = :districtId
+    """)
+    List<ApartmentInfoVo> findByDistrictId(Long districtId);
 
 }
 

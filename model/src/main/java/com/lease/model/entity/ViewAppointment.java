@@ -1,13 +1,14 @@
 package com.lease.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.lease.model.enums.AppointmentStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.io.Serial;
 import java.util.Date;
@@ -16,6 +17,8 @@ import java.util.Date;
 @Setter
 @Getter
 @Entity
+@SQLDelete(sql = "UPDATE view_appointment SET is_deleted = 1 WHERE id = ?")
+@Where(clause = "is_deleted = 0")
 @Table(name = "view_appointment")
 public class ViewAppointment extends BaseEntity {
 
@@ -34,12 +37,9 @@ public class ViewAppointment extends BaseEntity {
     @Column(name = "phone")
     private String phone;
 
-    @Schema(description = "公寓id")
-    @Column(name = "apartment_id")
-    private Long apartmentId;
-
     @Schema(description = "预约时间")
     @Column(name = "appointment_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH-mm-ss")
     private Date appointmentTime;
 
     @Schema(description = "备注信息")
@@ -50,4 +50,13 @@ public class ViewAppointment extends BaseEntity {
     @Column(name = "appointment_status")
     @Convert(converter = AppointmentStatus.AppointmentStatusToIntegerConverter.class)
     private AppointmentStatus appointmentStatus;
+
+    @Transient
+    private Long apartmentId;
+
+    @JsonIgnoreProperties({"labelInfoList", "facilityInfoList"})
+    @ManyToOne
+    @Schema(description = "公寓id")
+    @JoinColumn(name = "apartment_id")
+    private ApartmentInfo apartmentInfo;
 }

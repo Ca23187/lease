@@ -1,7 +1,7 @@
 package com.lease.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.lease.model.enums.LeaseSourceType;
 import com.lease.model.enums.LeaseStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,14 +39,20 @@ public class LeaseAgreement extends BaseEntity {
     @Column(name = "identification_number")
     private String identificationNumber;
 
+    @Transient
+    private Long apartmentId;
+
     @Schema(description = "签约公寓id")
-    @JsonBackReference
+    @JsonIgnoreProperties({"labelInfoList", "facilityInfoList"})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "apartment_id")
     private ApartmentInfo apartmentInfo;
 
+    @Transient
+    private Long roomId;
+
     @Schema(description = "签约房间")
-    @JsonBackReference
+    @JsonIgnoreProperties({"labelInfoList", "facilityInfoList", "paymentTypeList", "leaseTermList", "apartmentInfo"})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private RoomInfo roomInfo;
@@ -61,9 +67,13 @@ public class LeaseAgreement extends BaseEntity {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date leaseEndDate;
 
-    @Schema(description = "租期id")
-    @Column(name = "lease_term_id")
+    @Transient
     private Long leaseTermId;
+
+    @Schema(description = "租期id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lease_term_id")
+    private LeaseTerm leaseTerm;
 
     @Schema(description = "租金（元/月）")
     @Column(name = "rent")
@@ -73,8 +83,10 @@ public class LeaseAgreement extends BaseEntity {
     @Column(name = "deposit")
     private BigDecimal deposit;
 
+    @Transient
+    private Long paymentTypeId;
+
     @Schema(description = "支付类型")
-    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_type_id")
     private PaymentType paymentType;

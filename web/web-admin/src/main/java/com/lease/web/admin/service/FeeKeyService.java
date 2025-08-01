@@ -1,7 +1,6 @@
 package com.lease.web.admin.service;
 
 import com.lease.model.entity.FeeKey;
-import com.lease.web.admin.vo.fee.FeeKeyVo;
 
 import java.util.List;
 
@@ -14,5 +13,5 @@ public interface FeeKeyService {
 
     void deleteById(Long feeKeyId);
 
-    List<FeeKeyVo> feeInfoList();
+    List<FeeKey> feeInfoList();
 }

@@ -35,4 +35,6 @@ public class FeeValue extends BaseEntity {
     @JoinColumn(name = "fee_key_id")
     private FeeKey feeKey;
 
+    @Transient
+    private Long feeKeyId;
 }

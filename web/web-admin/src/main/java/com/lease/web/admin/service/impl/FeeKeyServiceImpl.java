@@ -1,10 +1,9 @@
 package com.lease.web.admin.service.impl;
 
 import com.lease.model.entity.FeeKey;
-import com.lease.web.admin.mapper.fee.FeeKeyMapper;
+import com.lease.model.entity.FeeValue;
 import com.lease.web.admin.repository.FeeKeyRepository;
 import com.lease.web.admin.service.FeeKeyService;
-import com.lease.web.admin.vo.fee.FeeKeyVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +16,10 @@ import java.util.List;
 public class FeeKeyServiceImpl implements FeeKeyService{
 
     private final FeeKeyRepository repository;
-    private final FeeKeyMapper feeKeyMapper;
 
     @Autowired
-    public FeeKeyServiceImpl(FeeKeyRepository repository,
-                             FeeKeyMapper feeKeyMapper) {
+    public FeeKeyServiceImpl(FeeKeyRepository repository) {
         this.repository = repository;
-        this.feeKeyMapper = feeKeyMapper;
     }
 
     @Override
@@ -37,8 +33,14 @@ public class FeeKeyServiceImpl implements FeeKeyService{
     }
 
     @Override
-    public List<FeeKeyVo> feeInfoList() {
-        return feeKeyMapper.toVoList(repository.findAllWithValues());
+    public List<FeeKey> feeInfoList() {
+        List<FeeKey> feeKeyList = repository.findAllWithValues();
+        for (FeeKey feeKey : feeKeyList) {
+            for (FeeValue feeValue : feeKey.getFeeValueList()) {
+                feeValue.setFeeKeyId(feeKey.getId());
+            }
+        }
+        return feeKeyList;
     }
 }
 

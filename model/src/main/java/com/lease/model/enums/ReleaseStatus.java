@@ -24,5 +24,4 @@ public enum ReleaseStatus implements BaseEnum {
             super(ReleaseStatus.class);
         }
     }
-
 }

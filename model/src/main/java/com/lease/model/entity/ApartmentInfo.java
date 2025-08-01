@@ -1,7 +1,6 @@
 package com.lease.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.lease.model.enums.ReleaseStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -112,7 +111,6 @@ public class ApartmentInfo extends BaseEntity {
 
     @JsonIgnore
     @Schema(description="公寓图片列表")
-    @JsonManagedReference
     @OneToMany
     @JoinColumn(name = "item_id", referencedColumnName = "id", insertable = false, updatable = false)
     @Where(clause = "item_type = 1")
@@ -120,7 +118,6 @@ public class ApartmentInfo extends BaseEntity {
 
     @JsonIgnore
     @Schema(description="公寓房间列表")
-    @JsonManagedReference
     @OneToMany(mappedBy = "apartmentInfo", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomInfo> roomInfoList;
 }
