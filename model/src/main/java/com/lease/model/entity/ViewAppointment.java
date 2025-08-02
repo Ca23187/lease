@@ -17,7 +17,7 @@ import java.util.Date;
 @Setter
 @Getter
 @Entity
-@SQLDelete(sql = "UPDATE view_appointment SET is_deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE view_appointment SET is_deleted = 1, update_time = now() WHERE id = ?")
 @Where(clause = "is_deleted = 0")
 @Table(name = "view_appointment")
 public class ViewAppointment extends BaseEntity {

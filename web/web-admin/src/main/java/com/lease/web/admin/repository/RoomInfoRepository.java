@@ -61,6 +61,6 @@ public interface RoomInfoRepository extends JpaRepository<RoomInfo, Long> {
     List<RoomInfoVo> findAllBasicRoomInfoVo();
 
     @Modifying
-    @Query(value = "UPDATE RoomInfo ri SET ri.isRelease = :status WHERE ri.id = :id")
+    @Query(value = "UPDATE RoomInfo ri SET ri.isRelease = :status, ri.updateTime = current_timestamp WHERE ri.id = :id")
     void updateReleaseStatusById(Long id, ReleaseStatus status);
 }

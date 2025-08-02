@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
-@SQLDelete(sql = "UPDATE attr_key SET is_deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE attr_key SET is_deleted = 1, update_time = now() WHERE id = ?")
 @Where(clause = "is_deleted = 0")
 @Table(name = "attr_key")
 public class AttrKey extends BaseEntity {

@@ -1,5 +1,6 @@
 package com.lease.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lease.model.enums.BaseStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
@@ -8,6 +9,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.io.Serial;
 
@@ -15,6 +18,8 @@ import java.io.Serial;
 @Setter
 @Getter
 @Entity
+@SQLDelete(sql = "UPDATE user_info SET is_deleted = 1, update_time = now() WHERE id = ?")
+@Where(clause = "is_deleted = 0")
 @Table(name = "user_info")
 public class UserInfo extends BaseEntity {
 
@@ -25,6 +30,7 @@ public class UserInfo extends BaseEntity {
     @Column(name = "phone")
     private String phone;
 
+    @JsonIgnore
     @Schema(description = "密码")
     @Column(name = "password")
     private String password;

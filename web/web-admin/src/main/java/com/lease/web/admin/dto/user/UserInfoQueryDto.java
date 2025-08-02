@@ -1,4 +1,4 @@
-package com.lease.web.admin.vo.user;
+package com.lease.web.admin.dto.user;
 
 import com.lease.model.enums.BaseStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Schema(description = "用户信息查询实体")
 @Data
-public class UserInfoQueryVo {
+public class UserInfoQueryDto {
 
     @Schema(description = "用户手机号码")
     private String phone;

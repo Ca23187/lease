@@ -1,0 +1,124 @@
+1. @Where(clause = "SQL语句")
+    在实体类上添加 @Where(clause = "SQL语句")，可以让JPQL在访问该表时一定会附加指定的SQL语句。
+    例如，@Where(clause = "is_deleted = 0") 可以实现查询时支持软删除。
+    但需要注意的是，@Where 只对 JPQL 的 SELECT 语句生效，且当 LEFT JOIN 某表的时候，若 JOIN 表的实体类也写了 @Where，则也会生效。
+    除此之外，@Where 也能加在实体类中 @OneToMany、@ManyToMany 上，用于实现对集合属性的局部筛选。
+
+2. @SQLDelete(sql = "SQL语句")
+    该注解只能写在实体类上以实现软删除，例如 @SQLDelete(sql = "UPDATE fee_key SET is_deleted = 1, update_time = now() WHERE id = ?")。
+    该注解会在调用JPA原生接口的时候生效，例如delete、deleteById、deleteAll、deleteAllById，另一种触发方式见 5。
+
+3. @ManyToOne
+    可以单独使用，注解 @JoinColumn(name = "外键名") 即可。
+    保存含有 @ManyToOne 成员的实体类时，记得 new 一个新成员然后设置其 id，否则多对一关系不会生效。
+
+4. @OneToMany
+    除非特殊情况，@OneToMany 应该双向使用，即：
+@OneToMany(mappedBy = "apartmentInfo", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+private List<RoomInfo> roomInfoList;
+
+@ManyToOne(fetch = FetchType.LAZY)
+@JoinColumn(name = "apartment_id")
+private ApartmentInfo apartmentInfo;
+
+    mappedBy 设置应为 @ManyToOne 一端的成员变量名。
+    cascade设置为 ALL 确保级联删除。
+    除此之外，@OneToMany 还有一个属性可以设置：orphanRemoval = true。
+    该设置能使你在删除该集合中的成员时，会同步删除该成员对应行在数据库中的记录。
+    例如，apartment.getRoomInfoList().remove(roomInfo); 会自动删除该房间，
+    apartment.getRoomInfoList().clear() 会删除所有的房间。
+    在双向关联的情况下，级联删除操作也会触发 @SQLDelete。
+
+5. @ManyToMany
+    一般而言最好手动指定 @ManyToMany 的多对多关系表。
+@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
+@JoinTable(
+        name = "apartment_facility",
+        joinColumns = @JoinColumn(name = "apartment_id"),
+        inverseJoinColumns = @JoinColumn(name = "facility_id")
+)
+private List<FacilityInfo> facilityInfoList;
+    @ManyToMany 的 cascade 一般设置 MERGE 即可。
+    只要增删改集合中的值，多对多关系表中的数据也会随之改变，例如：
+apartment.getFacilityInfoList().add(facility);
+apartmentRepository.save(apartment);
+    remove、clear 操作则会直接删除多对多关系表中的相关行，且无法触发 @SQLDelete。
+
+    上面是 @ManyToMany 的单向关联，如果想让另一侧也能查到集合的话，还需要在另一侧类中设置：
+@ManyToMany(mappedBy = "facilityInfoList", fetch = FetchType.LAZY)
+private List<ApartmentInfo> apartmentInfoList;
+    如果定义了双向关联，则也需要在业务逻辑中维护双向同步：
+facility.getApartmentInfoList().add(apartment);
+apartment.getFacilityInfoList().add(facility);
+
+
+6. @JsonManagedReference 和 @JsonBackReference
+    使用 @OneToMany 和 @ManyToMany 时，需要注意别让 JSON 在输出序列化时产生死循环，例如 A -> B -> A -> ...
+    最好的办法是给 A 设置 @JsonManagedReference，给 B 设置 @JsonBackReference。
+    如果有多重嵌套，例如 A -> B -> C，则需要两两配置，且成对设置相同的value值以区分，例如：
+    A 设置 @JsonManagedReference(value = "AB")，
+    B 设置 @JsonBackReference(value = "AB") 和 @JsonManagedReference(value = "BC")
+    C 设置 @JsonBackReference(value = "BC")。
+    value 值没有具体要求，只需要成对相同就行。
+
+7. @Transient
+    如果实体类中定义了 @ManyToOne，导致类中缺少该关联类的 id 从而不满足某些 JSON 的要求，可以考虑使用 @Transient。
+    @Transient 可以在实体类中加一个冗余字段，用来存缺失的成员 id 非常合适，但需要在查询结束后用增强 for 循环赋值。
+
+8. @JsonIgnore
+    可以让某一成员不参与 JSON 序列化，因此你可以用来隐藏那些永远不会出现在 JSON 中的字段。
+
+9. @JsonIgnoreProperties({"成员A", ...})
+    可以打在类上，也可以打在类中的类成员上。这样做可以指定 JSON 序列化时忽略若干成员。
+    例如，子类可以通过打该注解来防止序列化指定的若干父类成员。
+    若父类某成员是个类，可以在子类中重新定义这个父类中的类成员，然后在其上打该注解，以此控制父类的类变量的成员剔除。
+    上述方法在通过继承来复用实体类时非常有用，因为可以灵活控制实体类中某一成员是否序列化。
+
+10. @Modifying，@Transactional
+    增删改操作必须打@Modifying，且在serviceImpl的方法上打@Transactional
+
+11. @Query 的三种写法
+    当自定义@Query时，有如下几种方式：
+    11.1 原生SQL + 接口投影
+        需要在 @Query 中设置 nativeQuery = true;。
+        只能用接口投影的方式，即先用AS定义好字段名，然后再写一个投影接口，里面定义好与 AS 后字段名一一对应的 getXXX()。
+        接口里面也可以嵌套接口（参见RoomItemVo），只要也定义好get方法让字段名一一对应就行。
+        当查询结果中有非实体字段（譬如某些计算出来的值）或跨表字段时非常推荐使用。
+    11.2 JPQL 查询整个实体类
+        左连接写法是 left join fetch a.list，等价于 left join b on a.id = b.id，fetch表示立即加载。
+        适用于查询整个实体类，且 fetch 写法只能用在这种情况下。
+        若某一 VO 不仅需要实体类的所有数据，还需要来自其他表的查询结果，我们就可以让该 VO 继承实体类，用 JPQL 查到实体类信息后用 Mapper 映射给 VO，再把其他表的查询结果交给 VO。
+        这种做法还有一个好处就是可以在 VO 类上用 @JsonIgnoreProperties 控制成员是否参与序列化。
+    11.3 SELECT new 完整VO类名(a.id, a.name, a.id, ...)
+        需要定义一个相应的 VO 类用来接收查询出来的字段，前提是需要在VO类里定义顺序一致的构造函数（参考SystemUserItemVo）。
+        可以接收跨表字段和计算值，效果跟原生SQL + 接口投影差不多。
+
+12. p6spy 配置
+    参见 web.pom、spy.properties 和 application.yml。
+    application.yml 配置：
+        driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        url: jdbc:p6spy:mysql://...
+
+13. Mapper
+    13.1 配置
+        参见 web.pom
+
+    13.2 Mapper 查询问题
+        如果源映射类中包含 @OneToMany 关系成员，且该成员并不参与映射，那么必须要在映射函数上忽略这些成员（参见ApartmentInfoMapper），避免不必要的查询。
+        除此之外，由于Mapper本质上还是遍历赋值，因此需要时刻注意有没有可能导致 N + 1 问题。
+        总之勤看 SQL 日志，如果有不必要的查询就及时制止。
+
+    13.3 UPDATE
+        由于 Mapper 如果遇到源映射类的成员为 null 值时会跳过映射，这样做不利于数据更新操作，因此需要设置：
+        @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
+        但这样设置之后，会导致 @OneToMany 的关系信息丢失。
+        例如，前端传来的DTO包含了更新后的公寓信息，但房间列表为 null，根据上面的设置，DTO数据映射到实体类时，房间列表也会变为 null，导致该公寓的房间全部被删除。
+        因此，@OneToMany 的成员也应该忽略映射，以防一对多信息丢失。
+
+14. 分页
+    跟MyBatis不同，JPA第一页的起始索引是 0 而不是 1，因此如果前端传来常规页数的话，接收后应该减 1。
+
+15. @CreatedDate @LastModifiedDate
+    需结合@EntityListeners(AuditingEntityListener.class)使用，并在配置类设置@EnableJpaAuditing。
+    这个注解只能作用于 save 操作，因此 update 和 delete 都无法触发。
+    要么用 @SQLDelete 软删除的时候顺手更新，要么 UPDATE 里设置 updateTime = current_timestamp 顺手更新。

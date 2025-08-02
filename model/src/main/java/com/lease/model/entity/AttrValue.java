@@ -15,7 +15,7 @@ import java.io.Serial;
 @Setter
 @Getter
 @Entity
-@SQLDelete(sql = "UPDATE attr_value SET is_deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE attr_value SET is_deleted = 1, update_time = now() WHERE id = ?")
 @Where(clause = "is_deleted = 0")
 @Table(name = "attr_value")
 public class AttrValue extends BaseEntity {

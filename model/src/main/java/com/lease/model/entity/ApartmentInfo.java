@@ -20,7 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@SQLDelete(sql = "UPDATE apartment_info SET is_deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE apartment_info SET is_deleted = 1, update_time = now() WHERE id = ?")
 @Where(clause = "is_deleted = 0")
 @Table(name = "apartment_info")
 public class ApartmentInfo extends BaseEntity {
@@ -118,6 +118,6 @@ public class ApartmentInfo extends BaseEntity {
 
     @JsonIgnore
     @Schema(description="公寓房间列表")
-    @OneToMany(mappedBy = "apartmentInfo", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "apartmentInfo", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<RoomInfo> roomInfoList;
 }

@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface ViewAppointmentRepository extends JpaRepository<ViewAppointment, Long> {
 
     @Modifying
-    @Query(value = "UPDATE ViewAppointment SET appointmentStatus = :status WHERE id = :id")
+    @Query(value = "UPDATE ViewAppointment SET appointmentStatus = :status, updateTime = current_timestamp WHERE id = :id")
     void updateStatusById(Long id, AppointmentStatus status);
 
     @Query("""

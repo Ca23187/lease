@@ -23,9 +23,9 @@ public interface LeaseAgreementRepository extends JpaRepository<LeaseAgreement, 
         and (:cityId is null or ai.cityId = :cityId)
         and (:districtId is null or ai.districtId = :districtId)
         and (:apartmentId is null or ai.id = :apartmentId)
-        and (:roomNumber is null or ri.roomNumber like concat('%', :roomNumber, '%'))
-        and (:name is null or la.name like concat('%', :name, '%'))
-        and (:phone is null or la.phone like concat('%', :phone, '%'))
+        and (:roomNumber is null or ri.roomNumber like %:roomNumber%)
+        and (:name is null or la.name like %:name%)
+        and (:phone is null or la.phone like %:phone%)
     """)
     Page<LeaseAgreement> findByQuery(
             String phone,
@@ -49,13 +49,14 @@ public interface LeaseAgreementRepository extends JpaRepository<LeaseAgreement, 
     Optional<LeaseAgreement> findById(Long id);
 
     @Modifying
-    @Query("UPDATE LeaseAgreement SET status = :status WHERE id = :id")
+    @Query("UPDATE LeaseAgreement SET status = :status, updateTime = current_timestamp WHERE id = :id")
     void updateStatusById(Long id, LeaseStatus status);
 
     @Modifying
     @Query("""
     UPDATE LeaseAgreement la
-    SET la.status = com.lease.model.enums.LeaseStatus.EXPIRED
+    SET la.status = com.lease.model.enums.LeaseStatus.EXPIRED,
+        la.updateTime = current_timestamp
     WHERE la.leaseEndDate <= :now
       AND la.status IN (com.lease.model.enums.LeaseStatus.SIGNED, com.lease.model.enums.LeaseStatus.WITHDRAWING)
     """)

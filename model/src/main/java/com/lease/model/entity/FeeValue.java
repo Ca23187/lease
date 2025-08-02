@@ -14,7 +14,7 @@ import java.io.Serial;
 @Setter
 @Getter
 @Entity
-@SQLDelete(sql = "UPDATE fee_value SET is_deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE fee_value SET is_deleted = 1, update_time = now() WHERE id = ?")
 @Where(clause = "is_deleted = 0")
 @Table(name = "fee_value")
 public class FeeValue extends BaseEntity {

@@ -8,6 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.io.Serial;
 
@@ -19,6 +21,8 @@ import java.io.Serial;
 @Setter
 @Getter
 @Entity
+@SQLDelete(sql = "UPDATE system_post SET is_deleted = 1, update_time = now() WHERE id = ?")
+@Where(clause = "is_deleted = 0")
 @Table(name = "system_post")
 public class SystemPost extends BaseEntity {
 

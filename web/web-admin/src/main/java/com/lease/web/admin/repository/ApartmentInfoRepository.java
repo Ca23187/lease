@@ -69,7 +69,7 @@ public interface ApartmentInfoRepository extends JpaRepository<ApartmentInfo, Lo
                                              Pageable pageable);
 
     @Modifying
-    @Query(value = "UPDATE ApartmentInfo ai SET ai.isRelease = :status WHERE ai.id = :id")
+    @Query(value = "UPDATE ApartmentInfo ai SET ai.isRelease = :status, ai.updateTime = current_timestamp WHERE ai.id = :id")
     void updateReleaseStatusById(Long id, ReleaseStatus status);
 
     @Query("""

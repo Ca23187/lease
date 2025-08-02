@@ -1,14 +1,14 @@
 package com.lease.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lease.model.enums.BaseStatus;
 import com.lease.model.enums.SystemUserType;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.io.Serial;
 
@@ -16,6 +16,8 @@ import java.io.Serial;
 @Setter
 @Getter
 @Entity
+@SQLDelete(sql = "UPDATE system_user SET is_deleted = 1, update_time = now() WHERE id = ?")
+@Where(clause = "is_deleted = 0")
 @Table(name = "system_user")
 public class SystemUser extends BaseEntity {
 
@@ -26,6 +28,7 @@ public class SystemUser extends BaseEntity {
     @Column(name = "username")
     private String username;
 
+    @JsonIgnore
     @Schema(description = "密码")
     @Column(name = "password")
     private String password;
@@ -51,9 +54,14 @@ public class SystemUser extends BaseEntity {
     @Column(name = "additional_info")
     private String additionalInfo;
 
-    @Schema(description = "岗位id")
-    @Column(name = "post_id")
+    @Transient
     private Long postId;
+
+    @JsonIgnore
+    @ManyToOne
+    @Schema(description = "岗位id")
+    @JoinColumn(name = "post_id")
+    private SystemPost systemPost;
 
     @Schema(description = "账号状态")
     @Column(name = "status")

@@ -11,11 +11,11 @@ import java.util.List;
 
 public interface GraphInfoRepository extends JpaRepository<GraphInfo, Long> {
     @Modifying
-    @Query("update GraphInfo g set g.isDeleted = 1 where g.itemId = :id and g.itemType = com.lease.model.enums.ItemType.APARTMENT")
+    @Query("update GraphInfo g set g.isDeleted = 1, g.updateTime = current_timestamp where g.itemId = :id and g.itemType = com.lease.model.enums.ItemType.APARTMENT")
     void deleteApartmentGraphByItemId(Long id);
 
     @Modifying
-    @Query("update GraphInfo g set g.isDeleted = 1 where g.itemId = :id and g.itemType = com.lease.model.enums.ItemType.ROOM")
+    @Query("update GraphInfo g set g.isDeleted = 1, g.updateTime = current_timestamp where g.itemId = :id and g.itemType = com.lease.model.enums.ItemType.ROOM")
     void deleteRoomGraphByItemId(Long id);
 
     @Query("""

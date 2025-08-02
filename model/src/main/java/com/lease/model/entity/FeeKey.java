@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
-@SQLDelete(sql = "UPDATE fee_key SET is_deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE fee_key SET is_deleted = 1, update_time = now() WHERE id = ?")
 @Where(clause = "is_deleted = 0")
 @Table(name = "fee_key")
 public class FeeKey extends BaseEntity {

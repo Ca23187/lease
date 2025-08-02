@@ -18,7 +18,7 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
-@SQLDelete(sql = "UPDATE room_info SET is_deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE room_info SET is_deleted = 1, update_time = now() WHERE id = ?")
 @Where(clause = "is_deleted = 0")
 @Table(name = "room_info")
 public class RoomInfo extends BaseEntity {

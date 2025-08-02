@@ -16,7 +16,7 @@ import java.io.Serial;
 @Getter
 @Entity
 @Table(name = "payment_type")
-@SQLDelete(sql = "UPDATE payment_type SET is_deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE payment_type SET is_deleted = 1, update_time = now() WHERE id = ?")
 @Where(clause = "is_deleted = 0")
 public class PaymentType extends BaseEntity {
 

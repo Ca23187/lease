@@ -1,4 +1,4 @@
-package com.lease.web.admin.vo.system.user;
+package com.lease.web.admin.dto.system.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Schema(description = "员工查询实体")
-public class SystemUserQueryVo {
+public class SystemUserQueryDto {
 
     @Schema(description= "员工姓名")
     private String name;
