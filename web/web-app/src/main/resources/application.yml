@@ -35,12 +35,6 @@ spring:
   jackson:
     time-zone: "GMT+8"
 
-minio:
-  endpoint: http://192.168.178.101:9000
-  access-key: minioadmin
-  secret-key: minioadmin
-  bucket-name: lease
-
 # 可以将参数对象的属性在doc中展平处理
 springdoc:
   default-flat-param-object: true
