@@ -2,15 +2,17 @@ package com.lease.web.app.vo.history;
 
 
 import com.lease.model.entity.BrowsingHistory;
-import com.lease.model.enums.ReleaseStatus;
 import com.lease.web.app.vo.graph.GraphVo;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
-@Data
+@Setter
+@Getter
 @Schema(description = "浏览历史基本信息")
 public class HistoryItemVo extends BrowsingHistory {
 
@@ -35,4 +37,16 @@ public class HistoryItemVo extends BrowsingHistory {
     @Schema(description = "区县名称")
     private String districtName;
 
+    public HistoryItemVo(Long id, Long userId, Long roomId, Date browseTime, String roomNumber, BigDecimal rent, String apartmentName, String provinceName, String cityName, String districtName) {
+        super.setId(id);
+        super.setUserId(userId);
+        super.setRoomId(roomId);
+        super.setBrowseTime(browseTime);
+        this.roomNumber = roomNumber;
+        this.rent = rent;
+        this.apartmentName = apartmentName;
+        this.provinceName = provinceName;
+        this.cityName = cityName;
+        this.districtName = districtName;
+    }
 }

@@ -1,14 +1,18 @@
 package com.lease.web.app.vo.agreement;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.lease.model.entity.LeaseAgreement;
 import com.lease.web.app.vo.graph.GraphVo;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
-@Data
+@Setter
+@Getter
 @Schema(description = "租约详细信息")
+@JsonIgnoreProperties({"apartmentInfo", "roomInfo", "leaseTerm", "paymentType"})
 public class AgreementDetailVo extends LeaseAgreement {
 
     @Schema(description = "公寓名称")

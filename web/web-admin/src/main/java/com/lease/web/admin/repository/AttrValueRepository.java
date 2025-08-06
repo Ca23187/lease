@@ -15,14 +15,11 @@ public interface AttrValueRepository extends JpaRepository<AttrValue, Long> {
            ak.name AS attrKeyName
     FROM AttrValue av
     JOIN av.attrKey ak
-    WHERE av.isDeleted = 0
-      AND ak.isDeleted = 0
-      AND av.id IN (
-          SELECT avl.id
-          FROM RoomInfo r
-          JOIN r.attrValueList avl
-          WHERE r.id = :apartmentId
+    WHERE av.id IN (
+          SELECT rav.attrValueId
+          FROM RoomAttrValue rav
+          WHERE rav.roomId = :roomId
       )
 """)
-    List<AttrValueVo> findAllAttrValueVoByApartmentId(Long apartmentId);
+    List<AttrValueVo> findAllAttrValueVoByRoomId(Long roomId);
 }

@@ -39,7 +39,7 @@ public class JwtUtil {
         }
     }
 
-//    public static void main(String[] args) {
-//        System.out.println(createToken(2L, "user"));
-//    }
+    public static void main(String[] args) {
+        System.out.println(createToken(1L, "user"));
+    }
 }

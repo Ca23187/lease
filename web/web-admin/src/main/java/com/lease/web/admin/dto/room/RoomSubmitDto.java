@@ -1,7 +1,7 @@
 package com.lease.web.admin.dto.room;
 
 import com.lease.model.entity.RoomInfo;
-import com.lease.web.admin.dto.graph.GraphVo;
+import com.lease.web.admin.vo.graph.GraphVo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;

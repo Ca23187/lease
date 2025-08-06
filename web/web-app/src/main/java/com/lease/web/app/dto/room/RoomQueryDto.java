@@ -1,4 +1,4 @@
-package com.lease.web.app.vo.room;
+package com.lease.web.app.dto.room;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Data
 @Schema(description = "房间查询实体")
-public class RoomQueryVo {
+public class RoomQueryDto {
 
 
     @Schema(description = "省份Id")

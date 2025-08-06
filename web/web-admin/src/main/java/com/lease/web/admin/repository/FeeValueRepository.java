@@ -16,13 +16,10 @@ public interface FeeValueRepository extends JpaRepository<FeeValue, Long> {
            fk.name AS feeKeyName
     FROM FeeValue fv
     JOIN fv.feeKey fk
-    WHERE fv.isDeleted = 0
-      AND fk.isDeleted = 0
-      AND fv.id IN (
-          SELECT afv.id
-          FROM ApartmentInfo a
-          JOIN a.feeValueList afv
-          WHERE a.id = :apartmentId
+    WHERE fv.id IN (
+          SELECT afv.feeValueId
+          FROM ApartmentFeeValue afv
+          WHERE afv.apartmentId = :apartmentId
       )
 """)
     List<FeeValueVo> findAllFeeValueVoByApartmentId(Long apartmentId);

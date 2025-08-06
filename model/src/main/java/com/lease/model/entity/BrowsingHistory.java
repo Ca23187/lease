@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.io.Serial;
 import java.util.Date;
@@ -21,6 +23,8 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@SQLDelete(sql = "UPDATE browsing_history SET is_deleted = 1, update_time = now() WHERE id = ?")
+@Where(clause = "is_deleted = 0")
 @Table(name = "browsing_history")
 public class BrowsingHistory extends BaseEntity {
 

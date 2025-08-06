@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RoomInfoRepository extends JpaRepository<RoomInfo, Long> {
-    @Query(value = "SELECT COUNT(*) FROM room_info WHERE apartment_id = :id AND is_deleted = 0", nativeQuery = true)
+    @Query(value = "SELECT COUNT(r) FROM RoomInfo r WHERE r.apartmentInfo.id = :id")
     Long countByApartmentInfoId(Long id);
 
     @Query(value = """

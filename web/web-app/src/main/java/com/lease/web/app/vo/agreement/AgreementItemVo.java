@@ -1,9 +1,10 @@
 package com.lease.web.app.vo.agreement;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lease.model.enums.LeaseSourceType;
 import com.lease.model.enums.LeaseStatus;
 import com.lease.web.app.vo.graph.GraphVo;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -43,5 +44,8 @@ public class AgreementItemVo {
 
     @Schema(description = "租金")
     private BigDecimal rent;
-    
+
+    @JsonIgnore
+    private Long roomId;
+
 }

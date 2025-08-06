@@ -38,3 +38,10 @@ spring:
 # 可以将参数对象的属性在doc中展平处理
 springdoc:
   default-flat-param-object: true
+
+# 短信验证码
+aliyun:
+  sms:
+    access-key-id: <access-key-id>
+    access-key-secret: <access-key-secret>
+    endpoint: dysmsapi.aliyuncs.com

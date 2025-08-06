@@ -14,8 +14,17 @@ public interface ViewAppointmentRepository extends JpaRepository<ViewAppointment
     @Query(value = "UPDATE ViewAppointment SET appointmentStatus = :status, updateTime = current_timestamp WHERE id = :id")
     void updateStatusById(Long id, AppointmentStatus status);
 
-    @Query("""
+    @Query(value = """
         SELECT va FROM ViewAppointment va
+        LEFT JOIN FETCH va.apartmentInfo ai
+        WHERE (:provinceId IS NULL OR ai.provinceId = :provinceId)
+          AND (:cityId IS NULL OR ai.cityId = :cityId)
+          AND (:districtId IS NULL OR ai.districtId = :districtId)
+          AND (:apartmentId IS NULL OR ai.id = :apartmentId)
+          AND (:name IS NULL OR va.name LIKE %:name%)
+          AND (:phone IS NULL OR va.phone LIKE %:phone%)
+    """, countQuery = """
+        SELECT COUNT(va) FROM ViewAppointment va
         LEFT JOIN va.apartmentInfo ai
         WHERE (:provinceId IS NULL OR ai.provinceId = :provinceId)
           AND (:cityId IS NULL OR ai.cityId = :cityId)

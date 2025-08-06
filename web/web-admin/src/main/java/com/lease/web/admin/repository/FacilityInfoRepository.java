@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface FacilityInfoRepository extends JpaRepository<FacilityInfo, Long> {
-    public List<FacilityInfo> findByType(ItemType type);
+    List<FacilityInfo> findByType(ItemType type);
 }

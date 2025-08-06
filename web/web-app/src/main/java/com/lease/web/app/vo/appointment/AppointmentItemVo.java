@@ -1,5 +1,6 @@
 package com.lease.web.app.vo.appointment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lease.model.enums.AppointmentStatus;
 import com.lease.web.app.vo.graph.GraphVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -12,6 +13,9 @@ import java.util.List;
 @Data
 @Schema(description = "APP端预约看房基本信息")
 public class AppointmentItemVo {
+
+    @JsonIgnore
+    private Long apartmentId;
 
     @Schema(description = "预约Id")
     private Long id;
@@ -28,4 +32,12 @@ public class AppointmentItemVo {
 
     @Schema(description = "当前预约状态")
     private AppointmentStatus appointmentStatus;
+
+    public AppointmentItemVo(Long apartmentId, Long id, String apartmentName, Date appointmentTime, AppointmentStatus appointmentStatus) {
+        this.apartmentId = apartmentId;
+        this.id = id;
+        this.apartmentName = apartmentName;
+        this.appointmentTime = appointmentTime;
+        this.appointmentStatus = appointmentStatus;
+    }
 }

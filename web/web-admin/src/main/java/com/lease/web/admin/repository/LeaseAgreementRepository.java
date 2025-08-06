@@ -13,12 +13,23 @@ import java.util.Optional;
 
 public interface LeaseAgreementRepository extends JpaRepository<LeaseAgreement, Long> {
 
-    @Query("""
+    @Query(value = """
     select la from LeaseAgreement la
     left join fetch la.apartmentInfo ai
     left join fetch la.roomInfo ri
     left join fetch la.paymentType pt
     left join fetch la.leaseTerm lt
+    where (:provinceId is null or ai.provinceId = :provinceId)
+        and (:cityId is null or ai.cityId = :cityId)
+        and (:districtId is null or ai.districtId = :districtId)
+        and (:apartmentId is null or ai.id = :apartmentId)
+        and (:roomNumber is null or ri.roomNumber like %:roomNumber%)
+        and (:name is null or la.name like %:name%)
+        and (:phone is null or la.phone like %:phone%)
+    """, countQuery = """
+    select count(la) from LeaseAgreement la
+        left join la.apartmentInfo ai
+        left join la.roomInfo ri
     where (:provinceId is null or ai.provinceId = :provinceId)
         and (:cityId is null or ai.cityId = :cityId)
         and (:districtId is null or ai.districtId = :districtId)

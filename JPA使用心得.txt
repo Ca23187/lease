@@ -103,12 +103,18 @@ apartment.getFacilityInfoList().add(facility);
     13.1 配置
         参见 web.pom
 
-    13.2 Mapper 查询问题
+    13.2 用法
+        MapStruct不关心你的方法名，只关心你的参数和返回值类型是否能对应。
+        在定义Vo toVo(Entity entity);后，并不需要显式定义List<Vo> toVoList(List<Entity> entityList);，MapStruct 会自动生成该方法。
+        如果某些时候需要自定义处理逻辑，则在接口中写 default 方法即可。
+        把 @MappingTarget 写在参数上可以直接给该参数做映射，例如：void updateFromDto(Dto dto, @MappingTarget Entity entity);
+
+    13.3 Mapper 查询问题
         如果源映射类中包含 @OneToMany 关系成员，且该成员并不参与映射，那么必须要在映射函数上忽略这些成员（参见ApartmentInfoMapper），避免不必要的查询。
         除此之外，由于Mapper本质上还是遍历赋值，因此需要时刻注意有没有可能导致 N + 1 问题。
         总之勤看 SQL 日志，如果有不必要的查询就及时制止。
 
-    13.3 UPDATE
+    13.4 UPDATE
         由于 Mapper 如果遇到源映射类的成员为 null 值时会跳过映射，这样做不利于数据更新操作，因此需要设置：
         @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
         但这样设置之后，会导致 @OneToMany 的关系信息丢失。
@@ -117,8 +123,23 @@ apartment.getFacilityInfoList().add(facility);
 
 14. 分页
     跟MyBatis不同，JPA第一页的起始索引是 0 而不是 1，因此如果前端传来常规页数的话，接收后应该减 1。
+    分页有一些语法糖：
+    14.1 Page<RoomItemVo> roomItemVoPage = roomInfoPage.map(roomInfoMapper::toVo);
+        无需重新 new 一个分页实体类，直接用 map 结合 Mapstruct 就能实现分页内容的映射
+    14.2 for (RoomItemVo r : roomItemVoPage)
+        跟 for (RoomItemVo r : roomItemVoPage.getContent()) 是一个效果
 
 15. @CreatedDate @LastModifiedDate
     需结合@EntityListeners(AuditingEntityListener.class)使用，并在配置类设置@EnableJpaAuditing。
     这个注解只能作用于 save 操作，因此 update 和 delete 都无法触发。
     要么用 @SQLDelete 软删除的时候顺手更新，要么 UPDATE 里设置 updateTime = current_timestamp 顺手更新。
+
+16. 笛卡尔积问题
+    join fetch @ManyToOne 和 @OneToOne（虽然不怎么用） 不会产生问题，放心用。
+    但如果试图用 join fetch 查询 @OneToMany 和 @ManyToMany 的成员，就会引发笛卡尔积问题。
+    16.1 不分页的情况
+        join fetch 可以只用一次，超过一次就会导致列表数据重复。
+    16.2 分页的情况
+        坚决不能使用，问题多多。
+    16.3 既然不让用，如何解决？
+        参见app模块下的roonInfoServiceImpl，需要先获得 id 列表，然后用 collection 分组再 for 循环挨个赋值。

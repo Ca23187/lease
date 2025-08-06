@@ -2,7 +2,7 @@ package com.lease.web.admin.repository;
 
 import com.lease.model.entity.GraphInfo;
 import com.lease.model.enums.ItemType;
-import com.lease.web.admin.dto.graph.GraphVo;
+import com.lease.web.admin.vo.graph.GraphVo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

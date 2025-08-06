@@ -1,19 +1,15 @@
 package com.lease.web.app.vo.graph;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 
 
-@Data
-@Schema(description = "图片信息")
 @AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@Getter
+@Setter
+@Schema(description = "图片信息")
 public class GraphVo implements Serializable {
 
 

@@ -1,6 +1,7 @@
 package com.lease.web.app.vo.room;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.lease.model.entity.ApartmentInfo;
 import com.lease.model.entity.LabelInfo;
 import com.lease.web.app.vo.graph.GraphVo;
@@ -30,6 +31,7 @@ public class RoomItemVo {
     private List<LabelInfo> labelInfoList;
 
     @Schema(description = "房间所属公寓信息")
+    @JsonIgnoreProperties({"facilityInfoList", "labelInfoList"})
     private ApartmentInfo apartmentInfo;
 
 }

@@ -92,7 +92,7 @@ public class RoomInfoServiceImpl implements RoomInfoService {
         RoomInfo roomInfo = roomInfoRepository.findWithApartmentById(id)
                 .orElseThrow(() -> new RuntimeException("未找到指定的房间信息"));
         RoomDetailVo roomDetailVo = roomInfoMapper.toDetailVo(roomInfo);
-        roomDetailVo.setAttrValueVoList(attrValueRepository.findAllAttrValueVoByApartmentId(id));
+        roomDetailVo.setAttrValueVoList(attrValueRepository.findAllAttrValueVoByRoomId(id));
         roomDetailVo.setGraphVoList(graphInfoRepository.findAllGraphVoById(id, ItemType.ROOM));
         return roomDetailVo;
     }

@@ -4,12 +4,14 @@ package com.lease.web.app.vo.fee;
 import com.lease.model.entity.FeeKey;
 import com.lease.model.entity.FeeValue;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 
-@Data
+@Setter
+@Getter
 public class FeeKeyVo extends FeeKey {
 
     @Schema(description = "杂费value列表")

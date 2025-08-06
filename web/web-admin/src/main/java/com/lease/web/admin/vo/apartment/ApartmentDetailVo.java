@@ -2,7 +2,7 @@ package com.lease.web.admin.vo.apartment;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.lease.model.entity.ApartmentInfo;
-import com.lease.web.admin.dto.graph.GraphVo;
+import com.lease.web.admin.vo.graph.GraphVo;
 import com.lease.web.admin.vo.fee.FeeValueVo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
