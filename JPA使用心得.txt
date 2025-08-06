@@ -83,12 +83,15 @@ apartment.getFacilityInfoList().add(facility);
         需要在 @Query 中设置 nativeQuery = true;。
         只能用接口投影的方式，即先用AS定义好字段名，然后再写一个投影接口，里面定义好与 AS 后字段名一一对应的 getXXX()。
         接口里面也可以嵌套接口（参见RoomItemVo），只要也定义好get方法让字段名一一对应就行。
-        当查询结果中有非实体字段（譬如某些计算出来的值）或跨表字段时非常推荐使用。
+        当查询结果中有非实体字段（譬如某些计算出来的值）或跨表字段时推荐使用。
+        然而接口投影有一个究极雷点：无法被序列化到 redis 里，所以还是建议使用 11.3
+
     11.2 JPQL 查询整个实体类
         左连接写法是 left join fetch a.list，等价于 left join b on a.id = b.id，fetch表示立即加载。
         适用于查询整个实体类，且 fetch 写法只能用在这种情况下。
         若某一 VO 不仅需要实体类的所有数据，还需要来自其他表的查询结果，我们就可以让该 VO 继承实体类，用 JPQL 查到实体类信息后用 Mapper 映射给 VO，再把其他表的查询结果交给 VO。
         这种做法还有一个好处就是可以在 VO 类上用 @JsonIgnoreProperties 控制成员是否参与序列化。
+
     11.3 SELECT new 完整VO类名(a.id, a.name, a.id, ...)
         需要定义一个相应的 VO 类用来接收查询出来的字段，前提是需要在VO类里定义顺序一致的构造函数（参考SystemUserItemVo）。
         可以接收跨表字段和计算值，效果跟原生SQL + 接口投影差不多。
@@ -143,3 +146,6 @@ apartment.getFacilityInfoList().add(facility);
         坚决不能使用，问题多多。
     16.3 既然不让用，如何解决？
         参见app模块下的roonInfoServiceImpl，需要先获得 id 列表，然后用 collection 分组再 for 循环挨个赋值。
+
+17. 热部署导致无法向上转型
+    在yml里关了热部署且删掉热部署依赖。

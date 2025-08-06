@@ -9,10 +9,12 @@ import java.util.List;
 
 public interface AttrValueRepository extends JpaRepository<AttrValue, Long> {
     @Query("""
-    SELECT av.id AS id,
-           av.name AS name,
-           ak.id AS attrKeyId,
-           ak.name AS attrKeyName
+    SELECT new com.lease.web.app.vo.attr.AttrValueVo(
+        av.id,
+        av.name,
+        ak.id,
+        ak.name
+    )
     FROM AttrValue av
     JOIN av.attrKey ak
     WHERE av.id IN (

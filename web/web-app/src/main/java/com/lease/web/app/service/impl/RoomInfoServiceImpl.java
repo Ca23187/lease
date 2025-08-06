@@ -1,5 +1,6 @@
 package com.lease.web.app.service.impl;
 
+import com.lease.common.constant.RedisConstant;
 import com.lease.common.login.LoginUserHolder;
 import com.lease.model.entity.LabelInfo;
 import com.lease.model.entity.RoomInfo;
@@ -9,14 +10,15 @@ import com.lease.web.app.repository.*;
 import com.lease.web.app.service.BrowsingHistoryService;
 import com.lease.web.app.service.RoomInfoService;
 import com.lease.web.app.vo.graph.GraphVo;
-import com.lease.web.app.vo.room.RoomDetailVo;
 import com.lease.web.app.vo.graph.RoomGraphVo;
+import com.lease.web.app.vo.room.RoomDetailVo;
 import com.lease.web.app.vo.room.RoomItemVo;
 import com.lease.web.app.vo.room.RoomLabelVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,10 +38,11 @@ public class RoomInfoServiceImpl implements RoomInfoService {
     private final AttrValueRepository attrValueRepository;
     private final FeeValueRepository feeValueRepository;
     private final BrowsingHistoryService browsingHistoryService;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     public RoomInfoServiceImpl(RoomInfoRepository roomInfoRepository,
-                               RoomInfoMapper roomInfoMapper, LabelInfoRepository labelInfoRepository, GraphInfoRepository graphInfoRepository, AttrValueRepository attrValueRepository, FeeValueRepository feeValueRepository, BrowsingHistoryService browsingHistoryService) {
+                               RoomInfoMapper roomInfoMapper, LabelInfoRepository labelInfoRepository, GraphInfoRepository graphInfoRepository, AttrValueRepository attrValueRepository, FeeValueRepository feeValueRepository, BrowsingHistoryService browsingHistoryService, RedisTemplate<String, Object> redisTemplate) {
         this.roomInfoRepository = roomInfoRepository;
         this.roomInfoMapper = roomInfoMapper;
         this.labelInfoRepository = labelInfoRepository;
@@ -47,6 +50,7 @@ public class RoomInfoServiceImpl implements RoomInfoService {
         this.attrValueRepository = attrValueRepository;
         this.feeValueRepository = feeValueRepository;
         this.browsingHistoryService = browsingHistoryService;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -116,13 +120,21 @@ public class RoomInfoServiceImpl implements RoomInfoService {
 
     @Override
     public RoomDetailVo getDetailById(Long id) {
-        RoomInfo roomInfo = roomInfoRepository.getDetailById(id);
-        RoomDetailVo vo = roomInfoMapper.toDetailVo(roomInfo);
-        vo.getApartmentItemVo().setMinRent(roomInfoRepository.findMinRentByApartmentInfo_Id(vo.getApartmentId()));
-        vo.getApartmentItemVo().setGraphVoList(graphInfoRepository.findApartmentGraphVoByApartmentId(vo.getApartmentId()));
-        vo.setFeeValueVoList(feeValueRepository.findAllFeeValueVoByApartmentId(vo.getApartmentId()));
-        vo.setAttrValueVoList(attrValueRepository.findAllAttrValueVoByRoomId(id));
-        vo.setGraphVoList(graphInfoRepository.findRoomGraphVoByRoomId(id));
+        String key = RedisConstant.APP_ROOM_PREFIX + id;
+        RoomDetailVo vo = (RoomDetailVo) redisTemplate.opsForValue().get(key);
+        if (vo == null) {
+            RoomInfo roomInfo = roomInfoRepository.getDetailById(id);
+            if (roomInfo == null) return null;
+
+            vo = roomInfoMapper.toDetailVo(roomInfo);
+            vo.getApartmentItemVo().setMinRent(roomInfoRepository.findMinRentByApartmentInfo_Id(vo.getApartmentId()));
+            vo.getApartmentItemVo().setGraphVoList(graphInfoRepository.findApartmentGraphVoByApartmentId(vo.getApartmentId()));
+            vo.setFeeValueVoList(feeValueRepository.findAllFeeValueVoByApartmentId(vo.getApartmentId()));
+            vo.setAttrValueVoList(attrValueRepository.findAllAttrValueVoByRoomId(id));
+            vo.setGraphVoList(graphInfoRepository.findRoomGraphVoByRoomId(id));
+
+            redisTemplate.opsForValue().set(key, vo);
+        }
 
         // 保存浏览历史
         browsingHistoryService.saveHistory(LoginUserHolder.getLoginUser().getUserId(), id);

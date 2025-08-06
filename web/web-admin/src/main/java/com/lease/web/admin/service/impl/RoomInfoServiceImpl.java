@@ -1,5 +1,6 @@
 package com.lease.web.admin.service.impl;
 
+import com.lease.common.constant.RedisConstant;
 import com.lease.model.entity.GraphInfo;
 import com.lease.model.entity.RoomInfo;
 import com.lease.model.enums.ItemType;
@@ -15,6 +16,7 @@ import com.lease.web.admin.vo.room.RoomItemVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,9 +36,10 @@ public class RoomInfoServiceImpl implements RoomInfoService {
     private final PaymentTypeRepository paymentTypeRepository;
     private final LeaseTermRepository leaseTermRepository;
     private final GraphInfoRepository graphInfoRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
-    public RoomInfoServiceImpl(RoomInfoRepository roomInfoRepository, RoomInfoMapper roomInfoMapper, AttrValueRepository attrValueRepository, FacilityInfoRepository facilityInfoRepository, LabelInfoRepository labelInfoRepository, PaymentTypeRepository paymentTypeRepository, LeaseTermRepository leaseTermRepository, GraphInfoRepository graphInfoRepository) {
+    public RoomInfoServiceImpl(RoomInfoRepository roomInfoRepository, RoomInfoMapper roomInfoMapper, AttrValueRepository attrValueRepository, FacilityInfoRepository facilityInfoRepository, LabelInfoRepository labelInfoRepository, PaymentTypeRepository paymentTypeRepository, LeaseTermRepository leaseTermRepository, GraphInfoRepository graphInfoRepository, RedisTemplate<String, Object> redisTemplate) {
         this.roomInfoRepository = roomInfoRepository;
         this.roomInfoMapper = roomInfoMapper;
         this.attrValueRepository = attrValueRepository;
@@ -45,6 +48,7 @@ public class RoomInfoServiceImpl implements RoomInfoService {
         this.paymentTypeRepository = paymentTypeRepository;
         this.leaseTermRepository = leaseTermRepository;
         this.graphInfoRepository = graphInfoRepository;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -60,6 +64,10 @@ public class RoomInfoServiceImpl implements RoomInfoService {
             roomInfo.getAttrValueList().clear();
             roomInfo.getPaymentTypeList().clear();
             roomInfo.getLeaseTermList().clear();
+
+            // 删除缓存
+            String key = RedisConstant.APP_ROOM_PREFIX + dto.getId();
+            redisTemplate.delete(key);
         } else {
             roomInfo = new RoomInfo();
         }
@@ -102,6 +110,8 @@ public class RoomInfoServiceImpl implements RoomInfoService {
     public void removeById(Long id) {
         roomInfoRepository.deleteById(id);
         graphInfoRepository.deleteRoomGraphByItemId(id);
+        String key = RedisConstant.APP_ROOM_PREFIX + id;
+        redisTemplate.delete(key);
     }
 
     @Override
