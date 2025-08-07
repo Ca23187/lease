@@ -41,10 +41,10 @@ public class RoomController {
     @Operation(summary = "根据条件分页查询房间列表")
     @GetMapping("pageItem")
     public Result<Page<RoomItemVo>> pageItem(
-            @RequestParam int page,
+            @RequestParam int current,
             @RequestParam int size,
             RoomQueryDto queryDto) {
-        Pageable pageable = PageRequest.of(page - 1, size);
+        Pageable pageable = PageRequest.of(current - 1, size);
         Page<RoomItemVo> result = roomInfoService.pageRooms(queryDto, pageable);
         return Result.ok(result);
     }

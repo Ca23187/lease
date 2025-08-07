@@ -42,10 +42,10 @@ public class ApartmentController {
     @Operation(summary = "根据条件分页查询公寓列表")
     @GetMapping("/pageItem")
     public Result<Page<ApartmentItemVo>> pageItem(
-            @RequestParam int page,
+            @RequestParam int current,
             @RequestParam int size,
             ApartmentQueryDto queryDto) {
-        Pageable pageable = PageRequest.of(page - 1, size);
+        Pageable pageable = PageRequest.of(current - 1, size);
         Page<ApartmentItemVo> result = apartmentInfoService.pageApartments(queryDto, pageable);
         return Result.ok(result);
     }
